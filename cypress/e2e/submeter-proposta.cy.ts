@@ -142,6 +142,131 @@ describe('Submeter Proposta', () => {
 
 
     // ════════════════════════════════════════════════════════════════
+    // STEP 2 — COORDENAÇÃO / DADOS PESSOAIS
+    // ════════════════════════════════════════════════════════════════
+
+    context('Dados Pessoais', () => {
+
+        beforeEach(() => {
+            cy.wait(500);
+            cy.get('[data-cy="coordenacao"]').click();
+            cy.get('[data-cy="dados-pessoais"]').click();
+        
+        })
+
+        context('Caminho Feliz', () => {
+            it('deve preencher os Dados Pessoais e avançar para Endereço com sucesso', () => {
+                cy.get('@fixture').then(({ propostaValida }: any) => {
+                cy.get('[data-cy="criadoPor.email"]').should('have.value', propostaValida.coordenacao.dadosPessoais.emailBloqueado).and('be.disabled');
+                cy.get('[data-cy="criadoPor.documento"]').should('have.value', propostaValida.coordenacao.dadosPessoais.cpfBloqueado).and('be.disabled');
+                cy.get('[data-cy="criadoPor.nome"]').clear().type(propostaValida.coordenacao.dadosPessoais.nome);
+                cy.selecionarOpcao('open-pais-id', 'search-pais-id', propostaValida.coordenacao.dadosPessoais.pais);
+                cy.get('[data-cy="criadoPor.dataNascimento"]').type(propostaValida.coordenacao.dadosPessoais.dataNascimento, { force: true });
+                cy.get('[data-cy="next-button"]').click();
+                cy.contains('Dados do usuário atualizados com sucesso.').should('be.visible');
+                });
+            });
+        });
+
+        context('Validações', () => {
+            it('deve exibir erro quando Nome, Data de Nascimento e País estão em branco', () => {
+                cy.get('[data-cy="criadoPor.nome"]').clear();
+                cy.get('[data-cy="criadoPor.dataNascimento"]').type('{selectall}{backspace}', { force: true })
+                cy.get('[data-cy="open-pais-id"]').click();
+                cy.get('[data-cy="search-pais-id"]').clear();
+                cy.get('[data-cy="next-button"]').click();
+                cy.contains(/Erro/i).should('be.visible');
+
+            })
+
+            it('deve exibir erro quando Nome está vazio e os demais campos preenchidos', () => {
+                cy.get('[data-cy="criadoPor.nome"]').clear();
+                cy.get('[data-cy="next-button"]').click();
+                cy.contains(/Erro/i).should('be.visible');
+
+            })
+        
+            it('deve exibir erro quando Data de Nascimento está vazia e os demais campos preenchidos', () => {
+                cy.get('[data-cy="criadoPor.dataNascimento"]').type('{selectall}{backspace}', { force: true });
+                cy.get('[data-cy="next-button"]').click();
+                cy.contains(/Erro/i).should('be.visible');
+            })
+ 
+            it('deve exibir erro quando País não é selecionado e os demais campos preenchidos', () => {
+                cy.get('[data-cy="open-pais-id"]').click();
+                cy.get('[data-cy="search-pais-id"]').clear();
+                cy.get('[data-cy="next-button"]').click();
+                cy.contains(/Erro/i).should('be.visible');
+            })
+    
+            it('deve truncar o campo Nome no limite máximo de 64 caracteres', () => {
+                cy.get('@fixture').then(({ propostaInvalida }: any) => {
+                    cy.get('[data-cy="possuo-nome-social-box"]').click();
+                    cy.get('[data-cy="criadoPor.nome"]').clear().type(propostaInvalida.coordenacao.dadosPessoais.nome_64chars);
+                    cy.get('[data-cy="criadoPor.nome"]').invoke('val').should('have.length', 64);
+                    cy.get('[data-cy="criadoPor.nome"]').clear().type(propostaInvalida.coordenacao.dadosPessoais.nome_65chars);
+                    cy.get('[data-cy="criadoPor.nome"]').invoke('val').should('have.length', 64);
+                })
+            })
+    
+            it('deve truncar o campo Nome Social no limite máximo de 64 caracteres', () => {
+                cy.get('@fixture').then(({ propostaInvalida }: any) => {
+                    cy.get('[data-cy="possuo-nome-social-box"]').click();
+                    cy.get('[data-cy="criadoPor.nomeSocial"]').type(propostaInvalida.coordenacao.dadosPessoais.nomeSocial_64chars);
+                    cy.get('[data-cy="criadoPor.nomeSocial"]').invoke('val').should('have.length', 64);
+                    cy.get('[data-cy="criadoPor.nomeSocial"]').clear().type(propostaInvalida.coordenacao.dadosPessoais.nomeSocial_65chars);
+                    cy.get('[data-cy="criadoPor.nomeSocial"]').invoke('val').should('have.length', 64);
+                })
+            })
+        
+            it('deve aplicar máscara DD/MM/AAAA e rejeitar entrada inválida em Data de Nascimento', () => {
+                cy.get('@fixture').then(({ propostaInvalida }: any) => {
+                    cy.get('[data-cy="criadoPor.dataNascimento"]').type('{selectall}{backspace}', { force: true });
+                    cy.get('[data-cy="criadoPor.dataNascimento"]').type('19122003', { force: true });
+                    cy.get('[data-cy="criadoPor.dataNascimento"]').should('have.value', '19/12/2003');
+
+                    cy.get('[data-cy="criadoPor.dataNascimento"]').type('{selectall}{backspace}', { force: true });
+                    cy.get('[data-cy="criadoPor.dataNascimento"]').type('abc', { force: true });
+                    cy.get('[data-cy="criadoPor.dataNascimento"]').invoke('val').should('not.match', /[a-zA-Z]/);
+
+                    cy.get('[data-cy="criadoPor.dataNascimento"]').type('{selectall}{backspace}', { force: true });
+                    cy.get('[data-cy="criadoPor.dataNascimento"]').type(propostaInvalida.coordenacao.dadosPessoais.dataNascimento_formatoInvalido, { force: true });
+                    cy.get('[data-cy="next-button"]').click();
+                    cy.contains(/Erro/i).should('be.visible');
+                })
+            })
+        
+            it('deve listar exatamente as cinco opções esperadas no seletor Raça/Cor', () => {
+                const opcoesEsperadas = ['Branco(a)', 'Pardo(a)', 'Preto(a)', 'Amarelo(a)', 'Indígena']
+                cy.get('[data-cy="open-raca-cor-id"]').click();
+                opcoesEsperadas.forEach((opcao: string) => {
+                    cy.contains('[role="option"]', opcao).should('be.visible');
+                });
+            });
+        
+            it('deve listar países pesquisáveis no seletor País', () => {
+                cy.get('@fixture').then(({ propostaValida }: any) => {
+                    cy.get('[data-cy="open-pais-id"]').click();
+                    cy.get('[data-cy="search-pais-id"]').clear().type(propostaValida.coordenacao.dadosPessoais.pais);
+                    cy.contains('[role="option"]', propostaValida.coordenacao.dadosPessoais.pais).should('be.visible');
+                    cy.get('[data-cy="search-pais-id"]').clear().type('Alemanha');
+                    cy.contains('[role="option"]', 'Alemanha').should('be.visible');
+                    cy.get('[data-cy="search-pais-id"]').clear().type('Japão');
+                    cy.contains('[role="option"]', 'Japão').should('be.visible');
+                });
+            });
+
+            it('deve exibir Brasil no topo da lista do seletor País', () => {
+                cy.get('[data-cy="open-pais-id"]').click();
+                cy.get('[data-cy="search-pais-id"]').clear();
+                cy.contains('[role="option"]', 'Brasil').then(($brasil) => {
+                    cy.wrap($brasil).prevAll('[role="option"]').should('have.length', 0);
+                });
+            });
+        });
+    });
+    
+    // ════════════════════════════════════════════════════════════════
     // STEP 2 — COORDENAÇÃO / DADOS ACADÊMICOS
     // ════════════════════════════════════════════════════════════════
 
@@ -193,6 +318,8 @@ describe('Submeter Proposta', () => {
         })
     })
 
+
+    
     // ════════════════════════════════════════════════════════════════
     // STEP 3 — APRESENTAÇÃO / DESCRIÇÃO
     // ════════════════════════════════════════════════════════════════
