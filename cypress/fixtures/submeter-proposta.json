@@ -1,0 +1,192 @@
+{
+  "login": {
+    "email": "batista.rocha@ufms.br",
+    "senha": "Leehfofa24."
+  },
+  "propostaValida": {
+    "edital": {
+      "nome": "Edital 2026-0001 Sig Cypress"
+    },
+    "caracterizacao": {
+      "informacoesIniciais": {
+        "tituloProjeto": "Projeto de Divulgação Científica Cypress 2026",
+        "duracaoMeses": 6,
+        "instituicaoExecutora": "UFMS",
+        "unidadeExecutora": "FACOM",
+        "areaDeConhecimento": {
+          "grandeArea": "Ciências Exatas e da Terra",
+          "area": "Ciência da Computação",
+          "subArea": "Metodologia e Técnicas da Computação",
+          "especialidade": "Engenharia de Software"
+        }
+      },
+      "informacoesComplementares": {
+        "pergunta218": "grande-faturamento-ano-acima-de",
+        "pergunta219": "Resposta complementar de texto para o edital Cypress 2026"
+      },
+      "abrangencia": {
+        "estado": "Mato Grosso do Sul",
+        "municipios": ["Campo Grande", "Dourados"]
+      }
+    },
+    "coordenacao": {
+      "dadosPessoais": {
+        "nome": "Leticia Teste Coordenadora",
+        "nomeSocial": "",
+        "dataNascimento": "01/01/1990",
+        "racaCor": "Branco(a)",
+        "pais": "Brasil",
+        "cpf": "000.000.000-00",
+        "celular": "(67) 99999-9999",
+        "emailBloqueado": "batista.rocha@ufms.br",
+        "cpfBloqueado": "057.077.101-32",
+        "possuiNomeSocial": false
+      },
+      "endereco": {
+        "cep": "79070-900",
+        "logradouro": "Avenida Costa e Silva",
+        "numero": "1",
+        "complemento": "Bloco A",
+        "bairro": "Vila Maciel",
+        "estado": "Mato Grosso do Sul",
+        "municipio": "Campo Grande"
+      },
+      "dadosAcademicos": {
+        "instituicao": "UFMS",
+        "sugerirInstituicao": false,
+        "instituicaoNome": "",
+        "instituicaoSigla": "",
+        "unidade": "FACOM",
+        "sugerirUnidade": false,
+        "unidadeNome": "",
+        "unidadeSigla": "",
+        "nivelAcademico": "Doutorado",
+        "interesseConsultor": false,
+        "lattes": "http://lattes.cnpq.br/0000000000000000",
+        "linkedin": "",
+        "areaDeConhecimento": {
+          "grandeArea": "Ciências Exatas e da Terra",
+          "area": "Ciência da Computação",
+          "subArea": "Metodologia e Técnicas da Computação",
+          "especialidade": "Engenharia de Software"
+        }
+      },
+      "dadosProfissionais": {
+        "possuiVinculoInstitucional": true,
+        "tipoVinculo": "Servidor Público",
+        "possuiVinculoEmpregaticio": true,
+        "inicioServico": "01/03/2015",
+        "regimeTrabalho": "Dedicação Exclusiva",
+        "funcaoCargo": "Professor",
+        "inicioFuncao": "01/03/2015"
+      }
+    },
+    "apresentacao": {
+      "descricao": {
+        "pergunta221": "opcao-1",
+        "pergunta222": "Descrição detalhada do projeto submetido via Cypress para o edital 2026."
+      },
+      "membros": {
+        "nomePesquisador": "Pesquisador Teste"
+      },
+      "atividades": {
+        "titulo": "Atividade Principal",
+        "descricao": "Descrição da atividade principal do projeto",
+        "mesInicio": "1",
+        "duracaoMeses": "3",
+        "cargaHorariaSemanal": "10"
+      },
+      "orcamento": {
+        "faixaFinanciamento": "Faixa A (R$0,00 - R$6.000,00)",
+        "bolsa": {
+          "modalidadeBolsa": "Iniciação Científica",
+          "nivelBolsa": "IC",
+          "quantidade": 1,
+          "duracaoMeses": "6",
+          "valorTotal": "600,00",
+          "contrapartida": false,
+          "tipoPessoa": "",
+          "entidade": ""
+        }
+      }
+    },
+    "anexos": {
+      "documentosPessoais": {
+        "categoria": "Formulário de Produção Científica",
+        "arquivo": "formulario-producao-cientifica.pdf"
+      },
+      "documentosProposta": {
+        "categoria": "Declaração de Anuência",
+        "arquivo": "declaracao-anuencia.pdf"
+      }
+    },
+    "termos": {
+      "termoDeAceite": {
+        "liEEstouDeAcordo": true
+      }
+    }
+  },
+  "propostaInvalida": {
+    "caracterizacao": {
+      "informacoesIniciais": {
+        "tituloProjeto_acima128chars": "Título com mais de cento e vinte e oito caracteres para forçar erro de validação no campo obrigatório de título do projeto na submissão da proposta XXXXXXXXX",
+        "tituloProjeto_vazio": "",
+        "duracaoMeses_abaixoMinimo": 0,
+        "duracaoMeses_acimaDuracao": 999,
+        "instituicaoExecutora_vazia": "",
+        "unidadeExecutora_vazia": ""
+      }
+    },
+    "coordenacao": {
+      "dadosPessoais": {
+        "nome_64chars": "Alessandro Gabriel Montenegro Albuquerque Ferreira Vasconcelosss",
+        "nome_65chars": "Alessandro Gabriel Montenegro Albuquerque Ferreira Vasconcelossss",
+        "nomeSocial_64chars": "Alexandre Gabriel Montenegro Albuquerque Ferreira Vasconcelos Lu",
+        "nomeSocial_65chars": "Alexandre Gabriel Montenegro Albuquerque Ferreira Vasconcelos Lua",
+        "nome_vazio": "",
+        "dataNascimento_formatoInvalido": "32/13/1990",
+        "dataNascimento_vazia": "",
+        "cpf_invalido": "111.111.111-11",
+        "cpf_formatoErrado": "00000000000",
+        "pais_vazio": ""
+      },
+      "endereco": {
+        "cep_formatoInvalido": "00000000",
+        "cep_inexistente": "00000-000",
+        "numero_acima8chars": "123456789",
+        "complemento_acima16chars": "Complemento muito longo demais",
+        "logradouro_vazio": "",
+        "bairro_vazio": "",
+        "estado_vazio": "",
+        "municipio_vazio": ""
+      },
+      "dadosAcademicos": {
+        "lattes_acima1024chars": "http://lattes.cnpq.br/00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "linkedin_acima1024chars": "https://linkedin.com/in/00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "dadosProfissionais": {
+        "inicioServico_formatoInvalido": "2015-03-01",
+        "inicioFuncao_formatoInvalido": "2015-03-01"
+      }
+    },
+    "apresentacao": {
+      "atividades": {
+        "titulo_acima32chars": "Título de atividade acima de trinta e dois caracteres",
+        "mesInicio_vazio": "",
+        "duracaoMeses_acimaSaldo": 999
+      },
+      "orcamento": {
+        "bolsa": {
+          "quantidade_negativa": -1,
+          "valorTotal_negativo": "-100,00",
+          "duracaoMeses_vazia": ""
+        }
+      }
+    },
+    "termos": {
+      "termoDeAceite": {
+        "liEEstouDeAcordo": false
+      }
+    }
+  }
+}
