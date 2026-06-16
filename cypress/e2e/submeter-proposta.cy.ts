@@ -374,6 +374,156 @@ describe('Submeter Proposta', () => {
 
 
     // ════════════════════════════════════════════════════════════════
+    // STEP 2 — COORDENAÇÃO / DADOS ACADÊMICOS
+    // ════════════════════════════════════════════════════════════════
+
+    context('Dados Acadêmicos', () => {
+
+        beforeEach(() => {
+            cy.wait(500);
+            cy.get('[data-cy="coordenacao"]').click();
+            cy.get('[data-cy="dados-academicos"]').click();
+        
+        })
+
+        context('Caminho Feliz', () => {
+            it('deve preencher os Dados Acadêmicos e avançar para Dados Profissionais com sucesso', () => {
+                cy.get('@fixture').then(({ propostaValida }: any) => {
+                    cy.selecionarOpcao('open-instituicao-id', 'search-instituicao-id', propostaValida.coordenacao.dadosAcademicos.instituicao);
+                    cy.selecionarOpcao('open-unidade-id', 'search-unidade-id', propostaValida.coordenacao.dadosAcademicos.unidade);
+                    cy.selecionarOpcao('open-nivel-academico-id', 'search-nivel-academico-id', propostaValida.coordenacao.dadosAcademicos.nivelAcademico);
+                    cy.get('[data-cy="criadoPor.lattes"]').type(propostaValida.coordenacao.dadosAcademicos.lattes);
+                    cy.get('[data-cy="criadoPor.linkedin"]').type(propostaValida.coordenacao.dadosAcademicos.linkedin);
+                    cy.get('[data-cy="next-button"]').click();
+                    cy.contains('Dados do usuário atualizados com sucesso.').should('be.visible');
+                });
+            });
+            it('deve adicionar Área de Conhecimento informando apenas a Grande Área com sucesso', () => {
+                cy.get('@fixture').then(({ propostaValida }: any) => {
+                    cy.get('[data-cy="add-areas-de-conhecimento"]').click();
+                    cy.selecionarOpcao('open-grande-area-id', 'search-grande-area-id', propostaValida.coordenacao.dadosAcademicos.areaDeConhecimento.grandeArea);
+                    cy.get('[data-cy="criadoPor.areaDeConhecimento-confirmar"]').click();
+                    cy.contains('td', propostaValida.coordenacao.dadosAcademicos.areaDeConhecimento.grandeArea).should('be.visible');
+                });
+            });
+        });
+
+        context('Validações', () => {
+            it('deve truncar o campo Currículo Lattes no limite máximo de 1024 caracteres', () => {
+                cy.get('@fixture').then(({ propostaInvalida }: any) => {
+                    cy.get('[data-cy="criadoPor.lattes"]').clear().type(propostaInvalida.coordenacao.dadosAcademicos.lattes_acima1024chars);
+                    cy.get('[data-cy="criadoPor.lattes"]').invoke('val').then((valor: any) => {
+                        expect(valor.length).to.be.at.most(1024);
+                    });
+                });
+            });
+        
+            it('deve truncar o campo LinkedIn no limite máximo de 1024 caracteres', () => {
+                cy.get('@fixture').then(({ propostaInvalida }: any) => {
+                    cy.get('[data-cy="criadoPor.linkedin"]').clear().type(propostaInvalida.coordenacao.dadosAcademicos.linkedin_acima1024chars);
+                    cy.get('[data-cy="criadoPor.linkedin"]').invoke('val').then((valor: any) => {
+                        expect(valor.length).to.be.at.most(1024);
+                    });
+                });
+            });
+        
+            it('deve listar exatamente as oito opções esperadas no seletor Nível Acadêmico', () => {
+                const opcoesEsperadas = ['Ensino Fundamental', 'Ensino Médio', 'Ensino Médio/Profissionalizante', 'Ensino Superior', 'Especialização', 'Mestrado', 'Doutorado', 'Pós Doutorado']
+                cy.get('[data-cy="open-nivel-academico-id"]').click();
+                opcoesEsperadas.forEach((opcao: string) => {
+                cy.contains('[role="option"]', opcao).scrollIntoView().should('be.visible')
+                });
+            });
+        
+            it('deve selecionar Mestrado e Pós Doutorado individualmente no seletor Nível Acadêmico', () => {
+                cy.selecionarOpcao('open-nivel-academico-id', 'search-nivel-academico-id', 'Mestrado');
+                cy.get('[data-cy="search-nivel-academico-id"]').should('have.value', 'Mestrado');
+                cy.selecionarOpcao('open-nivel-academico-id', 'search-nivel-academico-id', 'Pós Doutorado');
+                cy.get('[data-cy="search-nivel-academico-id"]').should('have.value', 'Pós Doutorado');
+            });
+        
+            it('deve substituir o seletor de Instituição pelos campos Nome e Sigla ao marcar Sugerir Instituição', () => {
+                cy.get('@fixture').then(({ propostaValida }: any) => {
+                    cy.get('[data-cy="search-instituicao-id"]').should('be.visible');
+                    cy.get('[data-cy="sugerir-instituicao-box"]').click();
+                    cy.get('[data-cy="search-instituicao-id"]').should('not.exist');
+                    cy.get('[data-cy="criadoPor.instituicaoNome"]').should('be.visible').type(propostaValida.coordenacao.dadosAcademicos.instituicaoNome);
+                    cy.get('[data-cy="criadoPor.instituicaoSigla"]').should('be.visible').type(propostaValida.coordenacao.dadosAcademicos.instituicaoSigla);
+                    cy.get('[data-cy="menu-salvar"]').click();
+                })
+            })
+        
+            it('deve substituir o seletor de Unidade pelos campos Nome e Sigla ao marcar Sugerir Unidade', () => {
+                cy.get('@fixture').then(({ propostaValida }: any) => {
+                    cy.get('[data-cy="search-unidade-id"]').should('be.visible');
+                    cy.get('[data-cy="sugerir-unidade-box"]').click();
+                    cy.get('[data-cy="criadoPor.unidadeNome"]').should('be.visible').type(propostaValida.coordenacao.dadosAcademicos.unidadeNome);
+                    cy.get('[data-cy="criadoPor.unidadeSigla"]').should('be.visible').type(propostaValida.coordenacao.dadosAcademicos.unidadeSigla);
+                })
+            })
+        
+            it('deve exibir erro quando Grande Área não é preenchida na Área de Conhecimento', () => {
+                cy.get('[data-cy="add-areas-de-conhecimento"]').click();
+                cy.get('[data-cy="criadoPor.areaDeConhecimento-confirmar"]').click();
+                cy.contains(/Erro/i).should('be.visible');
+            })
+        
+            it('deve habilitar o campo Área somente após a seleção de Grande Área', () => {
+                cy.get('@fixture').then(({ propostaValida }: any) => {
+                    cy.get('[data-cy="add-areas-de-conhecimento"]').click();
+                    cy.get('[data-cy="search-area-id"]').should('not.exist');
+                    cy.selecionarOpcao('open-grande-area-id', 'search-grande-area-id', propostaValida.coordenacao.dadosAcademicos.areaDeConhecimento.grandeArea);
+                    cy.get('[data-cy="search-area-id"]').should('be.visible').and('not.be.disabled');
+                })
+            })
+        
+            it('deve habilitar o campo Subárea somente após a seleção de Área', () => {
+                cy.get('@fixture').then(({ propostaValida }: any) => {
+                    cy.get('[data-cy="add-areas-de-conhecimento"]').click();
+                    cy.selecionarOpcao('open-grande-area-id', 'search-grande-area-id', propostaValida.coordenacao.dadosAcademicos.areaDeConhecimento.grandeArea);
+                    cy.get('[data-cy="search-sub-area-id"]').should('not.exist');
+                    cy.selecionarOpcao('open-area-id', 'search-area-id', propostaValida.coordenacao.dadosAcademicos.areaDeConhecimento.area);
+                    cy.get('[data-cy="search-sub-area-id"]').should('be.visible').and('not.be.disabled');
+                })
+            })
+        
+            it('deve habilitar o campo Especialidade somente após a seleção de Subárea', () => {
+                cy.get('@fixture').then(({ propostaValida }: any) => {
+                    cy.get('[data-cy="add-areas-de-conhecimento"]').click();
+                    cy.selecionarOpcao('open-grande-area-id', 'search-grande-area-id', propostaValida.coordenacao.dadosAcademicos.areaDeConhecimento.grandeArea);
+                    cy.selecionarOpcao('open-area-id', 'search-area-id', propostaValida.coordenacao.dadosAcademicos.areaDeConhecimento.area);
+                    cy.get('[data-cy="search-especialidade-id"]').should('not.exist');
+                    cy.selecionarOpcao('open-sub-area-id', 'search-sub-area-id', propostaValida.coordenacao.dadosAcademicos.areaDeConhecimento.subArea);
+                    cy.get('[data-cy="search-especialidade-id"]').should('be.visible').and('not.be.disabled');
+                })
+            })
+        })
+
+        context('Editar', () => {
+            it('deve editar a Área de Conhecimento com sucesso', () => {
+                cy.get('@fixture').then(({ propostaValida }: any) => {
+                    cy.get('[data-cy="editar-button"]').first().click();
+                    cy.selecionarOpcao('open-grande-area-id', 'search-grande-area-id', 'Ciências Biológicas');
+                    cy.get('[data-cy="criadoPor.areaDeConhecimento-confirmar"]').click();
+                    cy.get('[data-cy="next-button"]').click();
+                    cy.contains(/Sucesso/i).should('be.visible');
+
+                })
+            })
+        })
+    
+        context('Excluir', () => {
+            it('deve excluir a Área de Conhecimento com sucesso', () => {
+                cy.get('@fixture').then(({ propostaValida }: any) => {
+                    cy.get('[data-cy="apagar-button"]').first().click();
+                    cy.get('[data-cy="next-button"]').click();
+                    cy.contains(/Sucesso/i).should('be.visible');
+                })
+            })
+        })
+    })
+
+    // ════════════════════════════════════════════════════════════════
     // STEP 2 — COORDENAÇÃO / DADOS PROFISSIONAIS
     // ════════════════════════════════════════════════════════════════
 
