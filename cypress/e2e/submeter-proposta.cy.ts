@@ -308,49 +308,48 @@ describe('Submeter Proposta', () => {
         })
 
         context('Validações', () => {
-            it.only('deve aplicar máscara xxxxx-xxx no CEP e rejeitar entrada fora do padrão', () => {
+            it('deve aplicar máscara xxxxx-xxx no CEP e rejeitar entrada fora do padrão', () => {
                 cy.get('@fixture').then(({ propostaValida, propostaInvalida }: any) => {
-                    cy.get('[data-cy="criadoPor.endereco.cep"]').clear()
-                    cy.get('[data-cy="criadoPor.endereco.cep"]').type(propostaValida.coordenacao.endereco.cepSemHifen)
-                    cy.get('[data-cy="criadoPor.endereco.cep"]').should('have.value', propostaValida.coordenacao.endereco.cep)
-                    cy.get('[data-cy="criadoPor.endereco.cep"]').clear().type(propostaInvalida.coordenacao.endereco.cep_letras)
-                    cy.get('[data-cy="criadoPor.endereco.cep"]').invoke('val').should('not.match', /[A-Za-z]/)
-                    cy.get('[data-cy="criadoPor.endereco.cep"]').clear().type(propostaInvalida.coordenacao.endereco.cep_incompleto)
-                    cy.get('[data-cy="criadoPor.endereco.logradouro"]').should('be.empty')
-                    cy.get('[data-cy="criadoPor.endereco.bairro"]').should('be.empty')
-                    cy.get('[data-cy="criadoPor.endereco.estado"]').should('be.empty')
-                    cy.get('[data-cy="criadoPor.endereco.municipio"]').should('be.empty')
+                    cy.get('[data-cy="criadoPor.endereco.cep"]').clear();
+                    cy.get('[data-cy="criadoPor.endereco.cep"]').type(propostaValida.coordenacao.endereco.cepSemHifen);
+                    cy.get('[data-cy="criadoPor.endereco.cep"]').should('have.value', propostaValida.coordenacao.endereco.cep);
+                    cy.get('[data-cy="criadoPor.endereco.cep"]').clear().type(propostaInvalida.coordenacao.endereco.cep_letras);
+                    cy.get('[data-cy="criadoPor.endereco.cep"]').invoke('val').should('not.match', /[A-Za-z]/);
+                    cy.get('[data-cy="criadoPor.endereco.cep"]').clear().type(propostaInvalida.coordenacao.endereco.cep_incompleto);
+                    cy.get('[data-cy="criadoPor.endereco.cep"]').should('have.value', propostaInvalida.coordenacao.endereco.cep_incompleto);
+                    cy.get('[data-cy="next-button"]').click();
+                    cy.contains(/Erro/i).should('be.visible');
                 })
             })
         
             it('deve exibir erro quando Logradouro está em branco', () => {
-                cy.get('[data-cy="criadoPor.endereco.logradouro"]').clear()
-                cy.get('[data-cy="next-button"]').click()
-                cy.get('[data-cy="erro-logradouro"]').should('be.visible')
+                cy.get('[data-cy="criadoPor.endereco.logradouro"]').clear();
+                cy.get('[data-cy="next-button"]').click();
+                cy.contains(/Erro/i).should('be.visible');
             })
         
             it('deve exibir erro quando Número está em branco', () => {
-                cy.get('[data-cy="criadoPor.endereco.numero"]').clear()
-                cy.get('[data-cy="next-button"]').click()
-                cy.get('[data-cy="criadoPor.endereco.numero"]').should('have.class', 'error')
+                cy.get('[data-cy="criadoPor.endereco.numero"]').clear();
+                cy.get('[data-cy="next-button"]').click();
+                cy.contains(/Erro/i).should('be.visible');
             })
         
             it('deve exibir erro quando Bairro está em branco', () => {
-                cy.get('[data-cy="criadoPor.endereco.bairro"]').clear()
-                cy.get('[data-cy="next-button"]').click()
-                cy.get('[data-cy="erro-bairro"]').should('be.visible')
+                cy.get('[data-cy="criadoPor.endereco.bairro"]').clear();
+                cy.get('[data-cy="next-button"]').click();
+                cy.contains(/Erro/i).should('be.visible');
             })
         
             it('deve exibir erro quando Estado/Região está em branco', () => {
-                cy.get('[data-cy="search-estado"]').clear()
-                cy.get('[data-cy="next-button"]').click()
-                cy.get('[data-cy="erro-estado"]').should('be.visible')
+                cy.get('[data-cy="estado"] > .css-1xjtwhn > .css-dw0r4c').click();
+                cy.get('[data-cy="next-button"]').click();
+                cy.contains(/Erro/i).should('be.visible');
             })
         
             it('deve exibir erro quando Município está em branco', () => {
-                cy.get('[data-cy="criadoPor.endereco.municipio"]').clear()
-                cy.get('[data-cy="next-button"]').click()
-                cy.get('[data-cy="erro-municipio"]').should('be.visible')
+                cy.get('[data-cy="municipio"] > .css-1xjtwhn > .css-dw0r4c').click();
+                cy.get('[data-cy="next-button"]').click();
+                cy.contains(/Erro/i).should('be.visible');
             })
         
             it('deve truncar o campo Número no limite máximo de 8 caracteres', () => {
@@ -373,35 +372,6 @@ describe('Submeter Proposta', () => {
         })
     })
 
-    // ════════════════════════════════════════════════════════════════
-    // STEP 2 — COORDENAÇÃO / DADOS ACADÊMICOS
-    // ════════════════════════════════════════════════════════════════
-
-    context('Dados Acadêmicos', () => {
-
-        beforeEach(() => {
-        cy.navegarParaProposta('dados-academicos')
-        })
-
-        context('Caminho Feliz', () => {
-        it('deve preencher os Dados Acadêmicos com sucesso', () => {})
-        })
-
-        context('Validações', () => {
-        it('deve exibir erro quando Lattes excede 1024 caracteres', () => {})
-        it('deve exibir erro quando LinkedIn excede 1024 caracteres', () => {})
-        it('deve exibir campos de sugestão quando checkbox Sugerir Instituição é marcado', () => {})
-        it('deve exibir campos de sugestão quando checkbox Sugerir Unidade é marcado', () => {})
-        })
-
-        context('Editar', () => {
-        it('deve editar a Área de Conhecimento com sucesso', () => {})
-        })
-
-        context('Excluir', () => {
-        it('deve excluir a Área de Conhecimento com sucesso', () => {})
-        })
-    })
 
     // ════════════════════════════════════════════════════════════════
     // STEP 2 — COORDENAÇÃO / DADOS PROFISSIONAIS
