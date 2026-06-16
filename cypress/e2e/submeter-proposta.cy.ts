@@ -266,6 +266,113 @@ describe('Submeter Proposta', () => {
         });
     });
     
+
+    // ════════════════════════════════════════════════════════════════
+    // STEP 2 — COORDENAÇÃO / ENDEREÇO
+    // ════════════════════════════════════════════════════════════════
+
+    context('Endereço', () => {
+
+        beforeEach(() => {
+            cy.wait(500);
+            cy.get('[data-cy="coordenacao"]').click();
+            cy.get('[data-cy="endereco"]').click();
+        
+        })
+
+        context('Caminho Feliz', () => {
+            it('deve preencher o CEP e autocompletar Logradouro, Bairro, Estado e Município com sucesso', () => {
+                cy.get('@fixture').then(({ propostaValida }: any) => {
+                cy.get('[data-cy="criadoPor.endereco.cep"]').clear();
+                cy.get('[data-cy="criadoPor.endereco.cep"]').type(propostaValida.coordenacao.endereco.cep);
+                cy.get('[data-cy="criadoPor.endereco.numero"]').click({ force: true });
+                cy.get('[data-cy="criadoPor.endereco.logradouro"]').should('have.value', propostaValida.coordenacao.endereco.logradouro);
+                cy.get('[data-cy="criadoPor.endereco.bairro"]').should('have.value', propostaValida.coordenacao.endereco.bairro);
+                cy.get('[data-cy="search-estado"]').should('have.value', propostaValida.coordenacao.endereco.estado);
+                cy.get('[data-cy="search-municipio"]').should('have.value', propostaValida.coordenacao.endereco.municipio)
+                
+
+                })
+            })
+            it('deve preencher o Endereço completo e avançar para Dados Acadêmicos com sucesso', () => {
+                cy.get('@fixture').then(({ propostaValida }: any) => {
+                    cy.get('[data-cy="criadoPor.endereco.cep"]').clear();
+                    cy.get('[data-cy="criadoPor.endereco.cep"]').type(propostaValida.coordenacao.endereco.cep);
+                    cy.get('[data-cy="criadoPor.endereco.numero"]').click({ force: true });
+                    cy.get('[data-cy="criadoPor.endereco.numero"]').clear().type(propostaValida.coordenacao.endereco.numero);
+                    cy.get('[data-cy="criadoPor.endereco.complemento"]').type(propostaValida.coordenacao.endereco.complemento);
+                    cy.get('[data-cy="next-button"]').click();
+                    cy.contains('Dados do usuário atualizados com sucesso.').should('be.visible');
+                })
+            })
+        })
+
+        context('Validações', () => {
+            it.only('deve aplicar máscara xxxxx-xxx no CEP e rejeitar entrada fora do padrão', () => {
+                cy.get('@fixture').then(({ propostaValida, propostaInvalida }: any) => {
+                    cy.get('[data-cy="criadoPor.endereco.cep"]').clear()
+                    cy.get('[data-cy="criadoPor.endereco.cep"]').type(propostaValida.coordenacao.endereco.cepSemHifen)
+                    cy.get('[data-cy="criadoPor.endereco.cep"]').should('have.value', propostaValida.coordenacao.endereco.cep)
+                    cy.get('[data-cy="criadoPor.endereco.cep"]').clear().type(propostaInvalida.coordenacao.endereco.cep_letras)
+                    cy.get('[data-cy="criadoPor.endereco.cep"]').invoke('val').should('not.match', /[A-Za-z]/)
+                    cy.get('[data-cy="criadoPor.endereco.cep"]').clear().type(propostaInvalida.coordenacao.endereco.cep_incompleto)
+                    cy.get('[data-cy="criadoPor.endereco.logradouro"]').should('be.empty')
+                    cy.get('[data-cy="criadoPor.endereco.bairro"]').should('be.empty')
+                    cy.get('[data-cy="criadoPor.endereco.estado"]').should('be.empty')
+                    cy.get('[data-cy="criadoPor.endereco.municipio"]').should('be.empty')
+                })
+            })
+        
+            it('deve exibir erro quando Logradouro está em branco', () => {
+                cy.get('[data-cy="criadoPor.endereco.logradouro"]').clear()
+                cy.get('[data-cy="next-button"]').click()
+                cy.get('[data-cy="erro-logradouro"]').should('be.visible')
+            })
+        
+            it('deve exibir erro quando Número está em branco', () => {
+                cy.get('[data-cy="criadoPor.endereco.numero"]').clear()
+                cy.get('[data-cy="next-button"]').click()
+                cy.get('[data-cy="criadoPor.endereco.numero"]').should('have.class', 'error')
+            })
+        
+            it('deve exibir erro quando Bairro está em branco', () => {
+                cy.get('[data-cy="criadoPor.endereco.bairro"]').clear()
+                cy.get('[data-cy="next-button"]').click()
+                cy.get('[data-cy="erro-bairro"]').should('be.visible')
+            })
+        
+            it('deve exibir erro quando Estado/Região está em branco', () => {
+                cy.get('[data-cy="search-estado"]').clear()
+                cy.get('[data-cy="next-button"]').click()
+                cy.get('[data-cy="erro-estado"]').should('be.visible')
+            })
+        
+            it('deve exibir erro quando Município está em branco', () => {
+                cy.get('[data-cy="criadoPor.endereco.municipio"]').clear()
+                cy.get('[data-cy="next-button"]').click()
+                cy.get('[data-cy="erro-municipio"]').should('be.visible')
+            })
+        
+            it('deve truncar o campo Número no limite máximo de 8 caracteres', () => {
+                cy.get('@fixture').then(({ propostaInvalida }: any) => {
+                cy.get('[data-cy="criadoPor.endereco.numero"]').clear().type(propostaInvalida.coordenacao.endereco.numero_8chars)
+                cy.get('[data-cy="criadoPor.endereco.numero"]').invoke('val').should('have.length', 8)
+                cy.get('[data-cy="criadoPor.endereco.numero"]').clear().type(propostaInvalida.coordenacao.endereco.numero_9chars)
+                cy.get('[data-cy="criadoPor.endereco.numero"]').invoke('val').should('have.length', 8)
+                })
+            })
+        
+            it('deve truncar o campo Complemento no limite máximo de 16 caracteres', () => {
+                cy.get('@fixture').then(({ propostaInvalida }: any) => {
+                cy.get('[data-cy="criadoPor.endereco.complemento"]').clear().type(propostaInvalida.coordenacao.endereco.complemento_16chars)
+                cy.get('[data-cy="criadoPor.endereco.complemento"]').invoke('val').should('have.length', 16)
+                cy.get('[data-cy="criadoPor.endereco.complemento"]').clear().type(propostaInvalida.coordenacao.endereco.complemento_17chars)
+                cy.get('[data-cy="criadoPor.endereco.complemento"]').invoke('val').should('have.length', 16)
+                })
+            })
+        })
+    })
+
     // ════════════════════════════════════════════════════════════════
     // STEP 2 — COORDENAÇÃO / DADOS ACADÊMICOS
     // ════════════════════════════════════════════════════════════════
