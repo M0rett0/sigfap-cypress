@@ -1,32 +1,40 @@
-// ***********************************************
-// This example commands.ts shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+import 'cypress-file-upload'
 
-Cypress.Commands.add("typeLogin", (username, password) => {
-  cy.visit("/");
-  cy.get('[data-cy="email"]').type(username);
-  cy.get('[data-cy="senha"]').type(password);
-  cy.get('[data-cy="loginButton"]').click(); //Botão Acessar da página principal
-});
+const BASE_URL = 'https://novo-sig.homolog.ledes.net'
+
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      selecionarOpcao(dataOpenCy: string, dataSearchCy: string, valor: string, closeButtonCy?: string): Chainable<void>
+      loginPorFixture(fixtureKey: string): Chainable<void>
+      navegarParaProposta(substep: string): Chainable<void>
+    }
+  }
+}
+
+Cypress.Commands.add('selecionarOpcao', (dataOpenCy: string, dataSearchCy: string, valor: string, closeButtonCy?: string) => {
+  cy.get(`[data-cy="${dataOpenCy}"]`).click()
+  cy.get(`[data-cy="${dataSearchCy}"]`).clear().type(valor)
+  cy.contains('[role="option"]', valor).first().click()
+  if (closeButtonCy) {
+    cy.get(`[data-cy="${closeButtonCy}"]`).click()
+  }
+})
+
+Cypress.Commands.add('loginPorFixture', (fixtureKey: string) => {
+  cy.session(fixtureKey, () => {
+    cy.fixture(fixtureKey).then((dados) => {
+      const credenciais = dados.login ?? dados.propostaValida?.login
+      cy.visit(BASE_URL)
+      cy.get('[data-cy="email"]').type(credenciais.email)
+      cy.get('[data-cy="senha"]').type(credenciais.senha)
+      cy.get('[data-cy="loginButton"]').click()
+      cy.url().should('include', '/home')
+    })
+  })
+})
+
+Cypress.Commands.add('navegarParaProposta', (substep: string) => {
+  cy.visit(`${BASE_URL}/edital/33/minhas-propostas/${Cypress.env('propostaId')}`)
+  cy.get(`[data-cy="${substep}"]`).click()
+})
