@@ -693,6 +693,177 @@ describe('Submeter Proposta', () => {
             })
         })
 
+        // ════════════════════════════════════════════════════════════════
+        // STEP 3 — COORDENAÇÃO / DADOS PROFISSIONAIS
+        // ════════════════════════════════════════════════════════════════
+
+        context('Dados Profissionais', () => {
+
+            beforeEach(() => {
+                cy.wait(500);
+                cy.get('[data-cy="coordenacao"]').click();
+                cy.get('[data-cy="dados-profissionais"]').click();
+            
+            })
+
+            context('Caminho Feliz', () => {
+                it('deve exibir os campos de vínculo ao marcar Possuo vínculo institucional', () => {
+                    cy.get('[data-cy="search-tipo-vinculo-instituciona"]').should('not.exist');
+                    cy.get('[data-cy="criadoPor.vinculoInstitucional.inicioServico"]').should('not.exist');
+                    cy.get('[data-cy="search-regime-trabalho-id"]').should('not.exist');
+                    cy.get('[data-cy="criadoPor.vinculoInstitucional.funcao"]').should('not.exist');
+                    cy.get('[data-cy="criadoPor.vinculoInstitucional.inicioFuncao"]').should('not.exist');
+
+                    cy.get('[data-cy="possui-vinculo-institucional"]').click({ force: true })
+                    cy.get('[data-cy="search-tipo-vinculo-instituciona"]').should('be.visible');
+                    cy.get('[data-cy="criadoPor.vinculoInstitucional.inicioServico"]').should('be.visible');
+                    cy.get('[data-cy="search-regime-trabalho-id"]').should('be.visible');
+                    cy.get('[data-cy="criadoPor.vinculoInstitucional.funcao"]').should('be.visible');
+                    cy.get('[data-cy="criadoPor.vinculoInstitucional.inicioFuncao"]').should('be.visible');
+                })
+        
+            it('deve preencher os Dados Profissionais com vínculo institucional e avançar para Apresentação com sucesso', () => {
+                cy.get('@fixture').then(({ propostaValida }: any) => {
+                    cy.get('[data-cy="possui-vinculo-institucional-box"]').click();
+                    cy.selecionarOpcao('open-tipo-vinculo-institucional', 'search-tipo-vinculo-instituciona', propostaValida.coordenacao.dadosProfissionais.tipoVinculo);
+                    cy.get('[data-cy="criadoPor.vinculoInstitucional.inicioServico"]').type(propostaValida.coordenacao.dadosProfissionais.inicioServico, { force: true });
+                    cy.selecionarOpcao('open-regime-trabalho-id', 'search-regime-trabalho-id', propostaValida.coordenacao.dadosProfissionais.regimeTrabalho);
+                    cy.get('[data-cy="criadoPor.vinculoInstitucional.funcao"]').type(propostaValida.coordenacao.dadosProfissionais.funcaoCargo);
+                    cy.get('[data-cy="criadoPor.vinculoInstitucional.inicioFuncao"]').type(propostaValida.coordenacao.dadosProfissionais.inicioFuncao, { force: true });
+                    cy.get('[data-cy="next-button"]').click();
+                    cy.contains(/Sucesso/i).should('be.visible');
+                })
+            })
+        
+            it('deve avançar para Apresentação sem marcar vínculo institucional', () => {
+                cy.get('[data-cy="possui-vinculo-institucional"]').then(($checkbox) => {
+                    if ($checkbox.is(':checked')) {
+                        cy.wrap($checkbox).click({ force: true })
+                    }
+                });
+                cy.get('[data-cy="possui-vinculo-institucional"]').should('not.be.checked');
+                cy.get('[data-cy="next-button"]').click();
+                cy.contains(/Sucesso/i).should('be.visible');
+            })
+            })
+
+            context('Validações', () => {
+                it('deve exibir os campos de vínculo empregatício marcados como obrigatórios ao marcar Possuo vínculo empregatício', () => {
+                    cy.marcarVinculoInstitucional()
+                    cy.get('[data-cy="possui-vinculo-empregaticio-box"]').should('not.be.checked')
+                    cy.marcarVinculoEmpregaticio()
+                })
+            
+                it('deve exibir erro quando Início de Serviço, Regime de Trabalho, Função/Cargo e Início de Função estão em branco com vínculo empregatício marcado', () => {
+                    cy.marcarVinculoInstitucional()
+                    cy.marcarVinculoEmpregaticio()
+                    cy.get('[data-cy="criadoPor.vinculoInstitucional.inicioServico"]').clear({ force: true })
+                    cy.get('[data-cy="criadoPor.vinculoInstitucional.funcao"]').clear()
+                    cy.get('[data-cy="criadoPor.vinculoInstitucional.inicioFuncao"]').clear({ force: true })
+                    cy.get('[data-cy="next-button"]').click()
+                    cy.contains(/Erro/i).should('be.visible');
+    
+                })
+            
+                it('deve exibir erro quando apenas Início de Serviço está em branco com vínculo empregatício marcado', () => {
+                    cy.get('@fixture').then(({ propostaValida }: any) => {
+                        cy.marcarVinculoInstitucional()
+                        cy.marcarVinculoEmpregaticio()
+                        cy.get('[data-cy="criadoPor.vinculoInstitucional.inicioServico"]').clear({ force: true })
+                        cy.selecionarOpcao('open-regime-trabalho-id', 'search-regime-trabalho-id', propostaValida.coordenacao.dadosProfissionais.regimeTrabalho)
+                        cy.get('[data-cy="criadoPor.vinculoInstitucional.funcao"]').type(propostaValida.coordenacao.dadosProfissionais.funcaoCargo)
+                        cy.get('[data-cy="criadoPor.vinculoInstitucional.inicioFuncao"]').type(propostaValida.coordenacao.dadosProfissionais.inicioFuncao, { force: true })
+                        cy.get('[data-cy="next-button"]').click()
+                        cy.contains(/Erro/i).should('be.visible');
+
+                    })
+                })
+            
+                it('deve exibir erro quando apenas Regime de Trabalho não é selecionado com vínculo empregatício marcado', () => {
+                    cy.get('@fixture').then(({ propostaValida }: any) => {
+                        cy.marcarVinculoInstitucional()
+                        cy.marcarVinculoEmpregaticio()
+                        cy.get('[data-cy="regime-trabalho-id"] > .css-1xjtwhn > .css-dw0r4c').click();
+                        cy.get('[data-cy="criadoPor.vinculoInstitucional.inicioServico"]').type(propostaValida.coordenacao.dadosProfissionais.inicioServico, { force: true })
+                        cy.get('[data-cy="criadoPor.vinculoInstitucional.funcao"]').type(propostaValida.coordenacao.dadosProfissionais.funcaoCargo)
+                        cy.get('[data-cy="criadoPor.vinculoInstitucional.inicioFuncao"]').type(propostaValida.coordenacao.dadosProfissionais.inicioFuncao, { force: true })
+                        cy.get('[data-cy="next-button"]').click()
+                        cy.contains(/Erro/i).should('be.visible');
+                    })
+                })
+            
+                it('deve exibir erro quando apenas Função/Cargo Atual está em branco com vínculo empregatício marcado', () => {
+                    cy.get('@fixture').then(({ propostaValida }: any) => {
+                        cy.marcarVinculoInstitucional()
+                        cy.marcarVinculoEmpregaticio()
+                        cy.get('[data-cy="criadoPor.vinculoInstitucional.funcao"]').clear()
+                        cy.get('[data-cy="criadoPor.vinculoInstitucional.inicioServico"]').type(propostaValida.coordenacao.dadosProfissionais.inicioServico, { force: true })
+                        cy.selecionarOpcao('open-regime-trabalho-id', 'search-regime-trabalho-id', propostaValida.coordenacao.dadosProfissionais.regimeTrabalho)
+                        cy.get('[data-cy="criadoPor.vinculoInstitucional.inicioFuncao"]').type(propostaValida.coordenacao.dadosProfissionais.inicioFuncao, { force: true })
+                        cy.get('[data-cy="next-button"]').click()
+                        cy.contains(/Erro/i).should('be.visible');
+                    })
+                })
+            
+                it('deve exibir erro quando apenas Início da Função/Cargo está em branco com vínculo empregatício marcado', () => {
+                    cy.get('@fixture').then(({ propostaValida }: any) => {
+                        cy.marcarVinculoInstitucional()
+                        cy.marcarVinculoEmpregaticio()
+                        cy.get('[data-cy="criadoPor.vinculoInstitucional.inicioFuncao"]').clear({ force: true })
+                        cy.get('[data-cy="criadoPor.vinculoInstitucional.inicioServico"]').type(propostaValida.coordenacao.dadosProfissionais.inicioServico, { force: true })
+                        cy.selecionarOpcao('open-regime-trabalho-id', 'search-regime-trabalho-id', propostaValida.coordenacao.dadosProfissionais.regimeTrabalho)
+                        cy.get('[data-cy="criadoPor.vinculoInstitucional.funcao"]').type(propostaValida.coordenacao.dadosProfissionais.funcaoCargo)
+                        cy.get('[data-cy="next-button"]').click()
+                        cy.contains(/Erro/i).should('be.visible');
+                    })
+                })
+            
+                it('deve listar exatamente as oito opções esperadas no seletor Tipo de Vínculo Institucional', () => {
+                    const opcoesEsperadas = ['CLT', 'Cooperativo', 'Autônomo', 'Colaborador', 'Bolsista', 'Estagiário', 'Servidor Público', 'Outros']
+                    cy.marcarVinculoInstitucional()
+                    cy.get('[data-cy="open-tipo-vinculo-institucional"]').click()
+                    opcoesEsperadas.forEach((opcao: string) => {
+                    cy.contains('[role="option"]', opcao).scrollIntoView().should('be.visible')
+                    })
+                })
+            
+            
+                it('deve listar exatamente as três opções esperadas no seletor Regime de Trabalho', () => {
+                    const opcoesEsperadas = ['Dedicação Exclusiva', 'Tempo Integral', 'Outros']
+                    cy.marcarVinculoInstitucional()
+                    cy.get('[data-cy="open-regime-trabalho-id"]').click()
+                    opcoesEsperadas.forEach((opcao: string) => {
+                    cy.get('[role="option"]:visible').contains(opcao).should('be.visible')
+                    })
+                })
+
+                it('deve truncar o campo Função/Cargo Atual no limite máximo de 32 caracteres', () => {
+                    cy.get('@fixture').then(({ propostaInvalida }: any) => {
+                        cy.marcarVinculoInstitucional()
+                        cy.get('[data-cy="criadoPor.vinculoInstitucional.funcao"]').clear().type(propostaInvalida.coordenacao.dadosProfissionais.funcaoCargo_32chars)
+                        cy.get('[data-cy="criadoPor.vinculoInstitucional.funcao"]').invoke('val').then((valor: any) => {
+                            expect(valor.length).to.be.at.most(32)
+                        })
+                        cy.get('[data-cy="criadoPor.vinculoInstitucional.funcao"]').clear().type(propostaInvalida.coordenacao.dadosProfissionais.funcaoCargo_33chars)
+                        cy.get('[data-cy="criadoPor.vinculoInstitucional.funcao"]').invoke('val').then((valor: any) => {
+                            expect(valor.length).to.be.at.most(32)
+                        })
+                    })
+                })
+            
+                it('deve aplicar máscara DD/MM/AAAA e rejeitar texto no campo Início da Função/Cargo', () => {
+                    cy.marcarVinculoInstitucional()
+                    cy.marcarVinculoEmpregaticio()
+                    cy.get('[data-cy="criadoPor.vinculoInstitucional.inicioFuncao"]').clear({ force: true }).type('04062024', { force: true })
+                    cy.get('[data-cy="criadoPor.vinculoInstitucional.inicioFuncao"]').should('have.value', '04/06/2024')
+                    cy.get('[data-cy="criadoPor.vinculoInstitucional.inicioFuncao"]').type('{selectall}{backspace}', { force: true })
+                    cy.get('[data-cy="criadoPor.vinculoInstitucional.inicioFuncao"]').type('abc', { force: true })
+                    cy.get('[data-cy="criadoPor.vinculoInstitucional.inicioFuncao"]').invoke('val').should('not.match', /[a-zA-Z]/)
+                })
+            
+            })
+        })
+
 
     })
 })
