@@ -1013,6 +1013,35 @@ describe('Submeter Proposta', () => {
             })
             
         })
-        
+
+        // ════════════════════════════════════════════════════════════════
+        // STEP 3 — APRESENTAÇÃO / ORÇAMENTO / FAIXA DE FINANCIAMENTO
+        // ════════════════════════════════════════════════════════════════
+
+        context('Faixa de Financiamento', () => {
+
+            beforeEach(() => {
+                cy.get('[data-cy="apresentacao"]').click();
+                cy.get('[data-cy="orcamento"]').click();
+                cy.get('[data-cy="faixa-de-financiamento"]').click();
+            })
+
+            context('Caminho Feliz', () => {
+                it('deve selecionar Faixa de Financiamento e avançar para o próximo substep com sucesso', () => {
+                    cy.get('@fixture').then(({ propostaValida }: any) => {
+                        cy.wait(500);
+                        cy.get('[data-cy="open-faixa-financiamento-id"]').click()
+                        cy.get('[role="option"]').first().click({ force: true })
+                        cy.get('[data-cy="faixa-financiamento-id"]').should('not.be.empty')
+                        cy.get('[data-cy="menu-salvar"]').click()
+                        cy.contains(/Sucesso/i).should('be.visible');
+
+                    })
+                })
+            })
+
+        })
+
+
     })
 })
