@@ -202,6 +202,41 @@ describe('Submeter Proposta', () => {
 
         })
 
+
+        // ════════════════════════════════════════════════════════════════
+        // STEP 1 — CARACTERIZAÇÃO / INFORMAÇÕES COMPLEMENTARES
+        // ════════════════════════════════════════════════════════════════
+
+        context('Informações Complementares', () => {
+
+            beforeEach(() => {
+                cy.wait(500);
+                cy.get('[data-cy="informacoes-complementares"]').click();
+            
+            })
+
+            context('Caminho Feliz', () => {
+                it('deve preencher as Informações Complementares e avançar com sucesso', () => {
+                    cy.get('@fixture').then(({ propostaValida }: any) => {
+                        cy.get('[data-cy="formularioPropostaInformacaoComplementar.pergunta-218-item-grande-faturamento-ano-acima-de"]').first().click()
+                        cy.get('[data-cy="formularioPropostaInformacaoComplementar.pergunta-219"]').type(propostaValida.caracterizacao.informacoesComplementares.pergunta219)
+                        cy.get('[data-cy="next-button"]').click()
+                    })
+                })
+            })
+
+            context('Validações', () => {
+                it('deve preencher as Informações Complementares e avançar com sucesso', () => {
+                    cy.get('@fixture').then(({ propostaValida }: any) => {
+                        cy.get('[data-cy="formularioPropostaInformacaoComplementar.pergunta-218-item-grande-faturamento-ano-acima-de"]').first().click()
+                        cy.get('[data-cy="formularioPropostaInformacaoComplementar.pergunta-219"]').type(propostaValida.caracterizacao.informacoesComplementares.pergunta219)
+                        cy.get('[data-cy="menu-salvar"]').click()
+                        cy.contains(/Pergunta Edital/i).should('be.visible');
+                    })
+                })
+            })
+        })
+
         // ════════════════════════════════════════════════════════════════
         // STEP 1 — CARACTERIZAÇÃO / ABRANGÊNCIA
         // ════════════════════════════════════════════════════════════════
