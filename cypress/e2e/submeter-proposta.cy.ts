@@ -1136,5 +1136,70 @@ describe('Submeter Proposta', () => {
 
     })
 
+        // ════════════════════════════════════════════════════════════════
+        // STEP 4 — ANEXOS / DOCUMENTOS PESSOAIS
+        // ════════════════════════════════════════════════════════════════
+
+        context('Documentos Pessoais da Proposta', () => {
+            beforeEach(() => {
+                cy.get('[data-cy="apresentacao"]').click();
+                cy.get('[data-cy="anexos"]').click();
+                cy.get('[data-cy="documentos-pessoais"]').click();
+            })
+        
+            context('Caminho Feliz', () => {
+                it('deve anexar Documento Pessoal que atende aos requisitos de formato e tamanho definidos no edital com sucesso', () => {
+                    cy.get('@fixture').then(({ propostaValida }: any) => {
+                        cy.get('[data-cy="open-select-categories-criado-po"]').click()
+                        cy.contains('[role="option"]', propostaValida.anexos.documentosPessoais.categoria).first().click({ force: true })
+                        cy.get('input[type="file"]').attachFile(propostaValida.anexos.documentosPessoais.arquivo) // REPORT: sem data-cy
+                        cy.get('[data-cy="documentos-pessoais-anexados"]').should('contain', propostaValida.anexos.documentosPessoais.arquivo)
+                        cy.contains(/Sucesso/i).should('be.visible');
+                    })
+                })
+            })
+        
+            context('Validações', () => {
+                it('deve bloquear upload de Documento Pessoal com formato não permitido pelo edital', () => {
+                    cy.get('@fixture').then(({ propostaInvalida }: any) => {
+                        cy.get('[data-cy="open-select-categories-criado-po"]').click()
+                        cy.contains('[role="option"]', propostaInvalida.anexos.documentosPessoais.categoria).first().click({ force: true })
+                        cy.get('input[type="file"]').attachFile(propostaInvalida.anexos.documentosPessoais.arquivo_formato_invalido) // REPORT: sem data-cy
+                        cy.contains(/Erro/i).should('be.visible');
+                    })
+                })
+            
+                it('deve bloquear upload de Documento Pessoal que excede o tamanho máximo definido no edital', () => {
+                    cy.get('@fixture').then(({ propostaInvalida }: any) => {
+                        cy.get('[data-cy="open-select-categories-criado-po"]').click()
+                        cy.contains('[role="option"]', propostaInvalida.anexos.documentosPessoais.categoria).first().click({ force: true })
+                        cy.get('input[type="file"]').attachFile(propostaInvalida.anexos.documentosPessoais.arquivo_tamanho_excedido) // REPORT: sem data-cy
+                        cy.contains(/Erro/i).should('be.visible');
+                    })
+                })
+            })
+        
+            context('Editar', () => {
+                it('deve substituir um Documento Pessoal já anexado antes da finalização da submissão com sucesso', () => {
+                    cy.get('@fixture').then(({ propostaValida }: any) => {
+                        cy.get('[data-cy="documentos-pessoais-anexados"]').contains(propostaValida.anexos.documentosPessoais.arquivo)
+                        cy.get('[data-cy="substituir-documento"]').first().click()
+                        cy.get('input[type="file"]').attachFile(propostaValida.anexos.documentosPessoaisSubstituicao.arquivo) // REPORT: sem data-cy
+                        cy.get('[data-cy="documentos-pessoais-anexados"]').should('contain', propostaValida.anexos.documentosPessoaisSubstituicao.arquivo)
+                        cy.get('[data-cy="documentos-pessoais-anexados"]').should('not.contain', propostaValida.anexos.documentosPessoais.arquivo)
+                    })
+                })
+            
+                it('deve substituir um Documento Pessoal carregado automaticamente a partir do perfil do usuário com sucesso', () => {
+                    cy.get('@fixture').then(({ propostaValida }: any) => {
+                        cy.get('[data-cy="documentos-pessoais-anexados"]').contains(propostaValida.anexos.documentosPessoaisPerfil.arquivo)
+                        cy.get('[data-cy="substituir-documento"]').first().click()
+                        cy.get('input[type="file"]').attachFile(propostaValida.anexos.documentosPessoaisPerfilSubstituicao.arquivo) // REPORT: sem data-cy
+                        cy.get('[data-cy="documentos-pessoais-anexados"]').should('contain', propostaValida.anexos.documentosPessoaisPerfilSubstituicao.arquivo)
+                        cy.get('[data-cy="documentos-pessoais-anexados"]').should('not.contain', propostaValida.anexos.documentosPessoaisPerfil.arquivo)
+                    })
+                })
+            })
+        })
     })
 })
