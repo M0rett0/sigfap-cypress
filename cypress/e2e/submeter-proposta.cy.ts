@@ -1042,6 +1042,99 @@ describe('Submeter Proposta', () => {
 
         })
 
+        // ════════════════════════════════════════════════════════════════
+        // STEP 3 — APRESENTAÇÃO / ORÇAMENTO / BOLSA
+        // ════════════════════════════════════════════════════════════════
+
+        context('Bolsa', () => {
+
+            beforeEach(() => {
+                cy.get('[data-cy="apresentacao"]').click();
+                cy.get('[data-cy="orcamento"]').click();
+                cy.get('[data-cy="bolsa"]').click();
+            })
+
+            context('Caminho Feliz', () => {
+                it('deve adicionar Bolsa com Contrapartida marcada informando Tipo Pessoa e Entidade com sucesso', () => {
+                    cy.get('@fixture').then(({ propostaValida }: any) => {
+                        cy.get('[data-cy="add-button"]').click()
+                        cy.selecionarOpcao('open-modalidade-bolsa-id', 'search-modalidade-bolsa-id', propostaValida.apresentacao.orcamento.bolsaContrapartida.modalidadeBolsa)
+                        cy.selecionarOpcao('open-nivel-bolsa-id', 'search-nivel-bolsa-id', propostaValida.apresentacao.orcamento.bolsaContrapartida.nivelBolsa)
+                        cy.get('[data-cy="rubricaBolsaForm.quantidade"]').type(propostaValida.apresentacao.orcamento.bolsaContrapartida.quantidade)
+                        cy.selecionarOpcao('open-duracao', 'search-duracao', propostaValida.apresentacao.orcamento.bolsaContrapartida.duracaoMeses)
+                        cy.get('[data-cy="rubricaBolsaForm.valorTotal"]').type(propostaValida.apresentacao.orcamento.bolsaContrapartida.valorTotal)
+                        cy.get('[data-cy="contrapartida-box"]').check()
+                        cy.selecionarOpcao('open-tipo-pessoa', 'search-tipo-pessoa', propostaValida.apresentacao.orcamento.bolsaContrapartida.tipoPessoa)
+                        cy.get('[data-cy="rubricaBolsaForm.entidade"]').type(propostaValida.apresentacao.orcamento.bolsaContrapartida.entidade)
+                        cy.get('[data-cy="rubricaBolsa-confirmar"]').click()
+                        cy.contains(/Sucesso/i).should('be.visible');
+                        
+                    })
+                })
+            
+                it('deve adicionar Bolsa preenchendo todos os campos obrigatórios com sucesso', () => {
+                    cy.get('@fixture').then(({ propostaValida }: any) => {
+                        cy.get('[data-cy="add-button"]').click()
+                        cy.selecionarOpcao('open-modalidade-bolsa-id', 'search-modalidade-bolsa-id', propostaValida.apresentacao.orcamento.bolsa.modalidadeBolsa)
+                        cy.selecionarOpcao('open-nivel-bolsa-id', 'search-nivel-bolsa-id', propostaValida.apresentacao.orcamento.bolsa.nivelBolsa)
+                        cy.get('[data-cy="rubricaBolsaForm.quantidade"]').type(propostaValida.apresentacao.orcamento.bolsa.quantidade)
+                        cy.selecionarOpcao('open-duracao', 'search-duracao', propostaValida.apresentacao.orcamento.bolsa.duracaoMeses)
+                        cy.get('[data-cy="rubricaBolsaForm.valorTotal"]').type(propostaValida.apresentacao.orcamento.bolsa.valorTotal)
+                        cy.get('[data-cy="rubricaBolsa-confirmar"]').click()
+                        cy.contains(/Sucesso/i).should('be.visible');
+                    })
+                })
+            
+                it('deve atualizar o bloco Total gasto em cada moeda após o cadastro de uma Bolsa com valor informado', () => {
+                    cy.get('@fixture').then(({ propostaValida }: any) => {
+                        cy.get('[data-cy="total-gasto-moeda"]').should('contain.text', 'Nenhum dinheiro foi gasto ainda.')
+                        cy.get('[data-cy="add-button"]').click()
+                        cy.selecionarOpcao('open-modalidade-bolsa-id', 'search-modalidade-bolsa-id', propostaValida.apresentacao.orcamento.bolsa.modalidadeBolsa)
+                        cy.selecionarOpcao('open-nivel-bolsa-id', 'search-nivel-bolsa-id', propostaValida.apresentacao.orcamento.bolsa.nivelBolsa)
+                        cy.get('[data-cy="rubricaBolsaForm.quantidade"]').type(propostaValida.apresentacao.orcamento.bolsa.quantidade)
+                        cy.selecionarOpcao('open-duracao', 'search-duracao', propostaValida.apresentacao.orcamento.bolsa.duracaoMeses)
+                        cy.get('[data-cy="rubricaBolsaForm.valorTotal"]').type(propostaValida.apresentacao.orcamento.bolsa.valorTotal)
+                        cy.get('[data-cy="rubricaBolsa-confirmar"]').click()
+                        cy.get('[data-cy="total-gasto-moeda"]').should('not.contain.text', 'Nenhum dinheiro foi gasto ainda.')
+                        cy.get('[data-cy="total-gasto-moeda"]').should('contain.text', propostaValida.apresentacao.orcamento.bolsa.valorTotal)
+                    })
+            })
+
+            context('Validações', () => {
+                it('deve exibir erro quando Contrapartida está marcada e Tipo Pessoa e Entidade não foram preenchidos', () => {
+                    cy.get('@fixture').then(({ propostaValida }: any) => {
+                        cy.get('[data-cy="add-button"]').click()
+                        cy.selecionarOpcao('open-modalidade-bolsa-id', 'search-modalidade-bolsa-id', propostaValida.apresentacao.orcamento.bolsa.modalidadeBolsa)
+                        cy.selecionarOpcao('open-nivel-bolsa-id', 'search-nivel-bolsa-id', propostaValida.apresentacao.orcamento.bolsa.nivelBolsa)
+                        cy.get('[data-cy="rubricaBolsaForm.quantidade"]').type(propostaValida.apresentacao.orcamento.bolsa.quantidade)
+                        cy.selecionarOpcao('open-duracao', 'search-duracao', propostaValida.apresentacao.orcamento.bolsa.duracaoMeses)
+                        cy.get('[data-cy="rubricaBolsaForm.valorTotal"]').type(propostaValida.apresentacao.orcamento.bolsa.valorTotal)
+                        cy.get('[data-cy="contrapartida-box"]').check()
+                        cy.get('[data-cy="rubricaBolsa-confirmar"]').click()
+                        cy.contains(/Erro/i).should('be.visible');
+                    })
+                })
+            })
+            context('Editar', () => {
+                it('deve editar a Quantidade de uma Bolsa já cadastrada através da coluna Ações com sucesso', () => {
+                    cy.get('@fixture').then(({ propostaValida }: any) => {
+                        cy.get('[data-cy="editar-button"]').first().click()
+                        cy.get('[data-cy="rubricaBolsaForm.quantidade"]').clear().type(propostaValida.apresentacao.orcamento.bolsaEdicao.quantidade)
+                        cy.get('[data-cy="rubricaBolsa-confirmar"]').click()
+                        cy.get('[data-cy="lista-bolsas"]').should('contain', propostaValida.apresentacao.orcamento.bolsaEdicao.quantidade)
+                    })
+                })
+            })
+        
+            context('Excluir', () => {
+                it('deve excluir uma Bolsa já cadastrada através da coluna Ações com sucesso', () => {
+                    cy.get('[data-cy="apagar-button"]').first().click()
+                    cy.get('[data-cy="lista-bolsas"]').should('not.exist')
+                })
+            })
+        })
+
+    })
 
     })
 })
