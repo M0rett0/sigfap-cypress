@@ -1201,5 +1201,60 @@ describe('Submeter Proposta', () => {
                 })
             })
         })
+
+        // ════════════════════════════════════════════════════════════════
+        // STEP 4 — ANEXOS / DOCUMENTOS DA PROPOSTA
+        // ════════════════════════════════════════════════════════════════
+
+        context('Documentos da Proposta', () => {
+            beforeEach(() => {
+                cy.get('[data-cy="apresentacao"]').click();
+                cy.get('[data-cy="anexos"]').click();
+                cy.get('[data-cy="documentos-da-proposta"]').click();
+            })
+        
+            context('Caminho Feliz', () => {
+                it('deve anexar Documento da Proposta que atende aos requisitos de formato e tamanho definidos no edital com sucesso', () => {
+                    cy.get('@fixture').then(({ propostaValida }: any) => {
+                        cy.get('[data-cy="select-categories-documento-prop"]').click()
+                        cy.contains('[role="option"]', propostaValida.anexos.documentosProposta.categoria).first().click({ force: true })
+                        cy.get('input[type="file"]').attachFile(propostaValida.anexos.documentosProposta.arquivo) // REPORT: sem data-cy
+                        cy.contains(/Sucesso/i).should('be.visible');
+                    })
+                })
+            })
+        
+            context('Validações', () => {
+                it('deve bloquear upload de Documento da Proposta com formato não permitido pelo edital', () => {
+                    cy.get('@fixture').then(({ propostaInvalida }: any) => {
+                        cy.get('[data-cy="select-categories-documento-prop"]').click()
+                        cy.contains('[role="option"]', propostaInvalida.anexos.documentosProposta.categoria).first().click({ force: true })
+                        cy.get('input[type="file"]').attachFile(propostaInvalida.anexos.documentosProposta.arquivo_formato_invalido) // REPORT: sem data-cy
+                        cy.contains(/Erro/i).should('be.visible');
+                    })
+                })
+            
+                it('deve bloquear upload de Documento da Proposta que excede o tamanho máximo definido no edital', () => {
+                    cy.get('@fixture').then(({ propostaInvalida }: any) => {
+                        cy.get('[data-cy="select-categories-documento-prop"]').click()
+                        cy.contains('[role="option"]', propostaInvalida.anexos.documentosProposta.categoria).first().click({ force: true })
+                        cy.get('input[type="file"]').attachFile(propostaInvalida.anexos.documentosProposta.arquivo_tamanho_excedido) // REPORT: sem data-cy
+                        cy.contains(/Erro/i).should('be.visible');
+                    })
+                })
+            })
+        
+            context('Editar', () => {
+                it('deve substituir um Documento da Proposta já anexado antes da finalização da submissão com sucesso', () => {
+                    cy.get('@fixture').then(({ propostaValida }: any) => {
+                        cy.get('[data-cy="documentos-proposta-anexados"]').contains(propostaValida.anexos.documentosProposta.arquivo)
+                        cy.get('[data-cy="substituir-documento"]').first().click()
+                        cy.get('input[type="file"]').attachFile(propostaValida.anexos.documentosPropostaSubstituicao.arquivo) // REPORT: sem data-cy
+                        cy.get('[data-cy="documentos-proposta-anexados"]').should('contain', propostaValida.anexos.documentosPropostaSubstituicao.arquivo)
+                        cy.get('[data-cy="documentos-proposta-anexados"]').should('not.contain', propostaValida.anexos.documentosProposta.arquivo)
+                    })
+                })
+            })
+        })
     })
 })
