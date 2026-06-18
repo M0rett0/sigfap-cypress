@@ -864,6 +864,57 @@ describe('Submeter Proposta', () => {
             })
         })
 
+        // ════════════════════════════════════════════════════════════════
+        // STEP 3 — APRESENTAÇÃO / DESCRIÇÃO
+        // ════════════════════════════════════════════════════════════════
 
+        context('Descrição', () => {
+
+            beforeEach(() => {
+                cy.wait(500);
+                cy.get('[data-cy="apresentacao"]').click();
+                cy.get('[data-cy="descricao"]').click();
+            
+            })
+
+            context('Caminho Feliz', () => {
+                it('deve responder as perguntas obrigatórias e avançar para Indicadores de Produção com sucesso', () => {
+                    cy.get('@fixture').then(({ propostaValida }: any) => {
+                        cy.get('[data-cy="formularioPropostaDescritiva.pergunta-221-item-opcao-1"]').click()
+                        cy.get('[data-cy="formularioPropostaDescritiva.pergunta-222"]').type(propostaValida.apresentacao.descricao.pergunta222)
+                        cy.get('[data-cy="next-button"]').click()
+                    })
+                })
+                })
+            
+            context('Validações', () => {
+                it('deve exibir erro quando ambas as perguntas obrigatórias estão em branco', () => {
+                    cy.get('#radio-formularioPropostaDescritiva\\.pergunta-221-0').invoke('prop', 'checked', false).trigger('change', { force: true })
+                    cy.get('[data-cy="formularioPropostaDescritiva.pergunta-222"]').clear()
+                    cy.get('[data-cy="menu-salvar"]').click()
+                    cy.contains(/A pergunta de informações complementares "Pergunta Edital 001\/2025 - Cypress Edital Completo/i).should('be.visible')
+                })
+            
+                it('deve exibir erro quando a pergunta descritiva possui menos de 10 caracteres', () => {
+                    cy.get('[data-cy="formularioPropostaDescritiva.pergunta-221-item-opcao-1"]').click()
+                    cy.get('[data-cy="formularioPropostaDescritiva.pergunta-222"]').type('Curto')
+                    cy.get('[data-cy="menu-salvar"]').click()
+                    cy.get('.css-2soag4').should('be.visible')
+                })
+            
+                it('deve impedir avanço quando a pergunta descritiva excede 20 caracteres', () => {
+                    cy.get('[data-cy="formularioPropostaDescritiva.pergunta-221-item-opcao-1"]').click()
+                    cy.get('[data-cy="formularioPropostaDescritiva.pergunta-222"]').type('Este texto possui mais de vinte caracteres')
+                    cy.get('[data-cy="formularioPropostaDescritiva.pergunta-222"]').invoke('val').then((valor: any) => {
+                    if (valor.length > 20) {
+                        cy.get('[data-cy="next-button"]').click()
+                        cy.get('[data-cy="erro-pergunta-222"]').should('be.visible')
+                    } else {
+                        expect(valor.length).to.be.at.most(20)
+                    }
+                    })
+                })
+            })
+        })
     })
 })
