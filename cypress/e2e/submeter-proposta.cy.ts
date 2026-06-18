@@ -916,7 +916,7 @@ describe('Submeter Proposta', () => {
                 })
             })
         })
-        
+
         // ════════════════════════════════════════════════════════════════
         // STEP 3 — APRESENTAÇÃO / MEMBROS
         // ════════════════════════════════════════════════════════════════
@@ -985,5 +985,34 @@ describe('Submeter Proposta', () => {
         
         })
 
+        // ════════════════════════════════════════════════════════════════
+        // STEP 3 — APRESENTAÇÃO / ATIVIDADES
+        // ════════════════════════════════════════════════════════════════
+
+        context('Atividades', () => {
+
+            beforeEach(() => {
+                cy.wait(500);
+                cy.get('[data-cy="apresentacao"]').click();
+                cy.get('[data-cy="atividades"]').click();
+            
+            })
+            context('Caminho Feliz', () => {
+                it('deve adicionar Atividade com Responsável e Membros associados com sucesso', () => {
+                    cy.get('@fixture').then(({ propostaValida }: any) => {
+                        cy.get('[data-cy="add-button"]').click()
+                        cy.get('[data-cy="propostaAtividadeForm.titulo"]').type(propostaValida.apresentacao.atividades.titulo);
+                        cy.selecionarOpcao('open-mes-inicio', 'search-mes-inicio', propostaValida.apresentacao.atividades.mesInicio);
+                        cy.selecionarOpcao('open-duracao', 'search-duracao', propostaValida.apresentacao.atividades.duracaoMeses);
+                        cy.get('[data-cy="open-carga-horaria-semanal"]').click()
+                        cy.contains('[role="option"]', propostaValida.apresentacao.atividades.cargaHorariaSemanal).first().click({ force: true })
+                        cy.get('[data-cy="propostaAtividade-confirmar"]').click()
+                        cy.contains(/Sucesso/i).should('be.visible');
+                    })
+                })
+            })
+            
+        })
+        
     })
 })
