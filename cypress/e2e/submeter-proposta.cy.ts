@@ -916,5 +916,74 @@ describe('Submeter Proposta', () => {
                 })
             })
         })
+        
+        // ════════════════════════════════════════════════════════════════
+        // STEP 3 — APRESENTAÇÃO / MEMBROS
+        // ════════════════════════════════════════════════════════════════
+
+        context('Membros', () => {
+
+            beforeEach(() => {
+                cy.wait(500);
+                cy.get('[data-cy="apresentacao"]').click();
+                cy.get('[data-cy="membros"]').click();
+            
+            })
+
+            context('Caminho Feliz', () => {
+                it('deve adicionar Membro pesquisando pelo nome e confirmar situação Pendente com sucesso', () => {
+                    cy.get('@fixture').then(({ propostaValida }: any) => {
+                        cy.get('button').contains('Adicionar').click()
+                        cy.get('[data-cy="nome-do-pesquisador"]').type(propostaValida.apresentacao.membros.nomePesquisador)
+                        cy.contains('[role="option"]', propostaValida.apresentacao.membros.nomePesquisador).first().click()
+                        cy.get('.css-l8imoj').click()
+                        cy.get('[data-cy="sim-continuar-button"]').click()
+                        cy.get('[data-cy="confirmar-button"]').click()
+                        cy.contains('tr', propostaValida.apresentacao.membros.nomePesquisador).within(() => {
+                            cy.contains('td', 'Pendente').should('be.visible')
+                            cy.get('td').eq(3).should('not.be.empty')
+                            cy.get('td').eq(4).should('contain.text', '-')
+                        })
+                    })
+                })
+                })
+            context('Validações', () => {
+                it('não deve exibir membro já adicionado na listagem de filtro do campo Nome do Pesquisador', () => {
+                    cy.get('@fixture').then(({ propostaValida }: any) => {
+                    cy.contains('tr', propostaValida.apresentacao.membros.nomePesquisador).should('be.visible')
+                    cy.get('button').contains('Adicionar').click()
+                    cy.get('[data-cy="nome-do-pesquisador"]').type(propostaValida.apresentacao.membros.nomePesquisador)
+                    cy.contains('[role="option"]', propostaValida.apresentacao.membros.nomePesquisador).should('not.exist')
+                    })
+                })
+            
+                it('deve editar a Função do Membro de um pesquisador não coordenador com sucesso', () => {
+                    cy.get('@fixture').then(({ propostaValida }: any) => {
+                        cy.contains('tr', propostaValida.apresentacao.membros.nomePesquisador).within(() => {
+                            cy.get('[role="combobox"]').click()
+                        })
+                        cy.contains('[role="option"]', 'Colaborador(a)').should('be.visible').click()
+                    })
+                })
+            
+                it('não deve permitir editar a Função do Membro do coordenador da proposta', () => {
+                    cy.get('@fixture').then(({ propostaValida }: any) => {
+                        cy.contains('tr', propostaValida.coordenacao.dadosPessoais.nome).within(() => {
+                            cy.contains('td', 'Coordenador').should('be.visible')
+                            cy.get('[role="combobox"]').should('not.exist')
+                        })
+                    })
+                })
+
+            
+                it('deve exibir a Função do coordenador como Coordenador de forma fixa', () => {
+                    cy.get('@fixture').then(({ propostaValida }: any) => {
+                        cy.contains('tr', propostaValida.coordenacao.dadosPessoais.nome).should('contain.text', 'Coordenador')
+                    })
+                })
+            })
+        
+        })
+
     })
 })
