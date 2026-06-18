@@ -8,6 +8,8 @@ declare global {
       selecionarOpcao(dataOpenCy: string, dataSearchCy: string, valor: string, closeButtonCy?: string): Chainable<void>
       loginPorFixture(fixtureKey: string): Chainable<void>
       navegarParaProposta(substep: string): Chainable<void>
+      marcarVinculoInstitucional(): Chainable<void>
+      marcarVinculoEmpregaticio(): Chainable<void>
     }
   }
 }
@@ -15,7 +17,7 @@ declare global {
 Cypress.Commands.add('selecionarOpcao', (dataOpenCy: string, dataSearchCy: string, valor: string, closeButtonCy?: string) => {
   cy.get(`[data-cy="${dataOpenCy}"]`).click()
   cy.get(`[data-cy="${dataSearchCy}"]`).clear().type(valor)
-  cy.contains('[role="option"]', valor).first().click()
+  cy.contains('[role="option"]', valor).first().click({ force: true })
   if (closeButtonCy) {
     cy.get(`[data-cy="${closeButtonCy}"]`).click()
   }
@@ -37,4 +39,20 @@ Cypress.Commands.add('loginPorFixture', (fixtureKey: string) => {
 Cypress.Commands.add('navegarParaProposta', (substep: string) => {
   cy.visit(`${BASE_URL}/edital/33/minhas-propostas/${Cypress.env('propostaId')}`)
   cy.get(`[data-cy="${substep}"]`).click()
+})
+
+Cypress.Commands.add('marcarVinculoInstitucional', () => {
+  cy.get('[data-cy="possui-vinculo-institucional"]').then(($checkbox) => {
+    if (!$checkbox.is(':checked')) {
+      cy.wrap($checkbox).click({ force: true })
+    }
+  })
+})
+ 
+Cypress.Commands.add('marcarVinculoEmpregaticio', () => {
+  cy.get('[data-cy="possui-vinculo-empregaticio"]').then(($checkbox) => {
+    if (!$checkbox.is(':checked')) {
+      cy.wrap($checkbox).click({ force: true })
+    }
+  })
 })

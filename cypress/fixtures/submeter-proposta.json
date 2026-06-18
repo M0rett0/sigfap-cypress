@@ -10,6 +10,9 @@
     "caracterizacao": {
       "informacoesIniciais": {
         "tituloProjeto": "Projeto de Divulgação Científica Cypress 2026",
+        "tipoEvento": "Seminário",
+        "estadoExecucao": "Mato Grosso do Sul",
+        "municipioExecucao": "Campo Grande",
         "duracaoMeses": 6,
         "instituicaoExecutora": "UFMS",
         "unidadeExecutora": "FACOM",
@@ -44,6 +47,7 @@
       },
       "endereco": {
         "cep": "79070-900",
+        "cepSemHifen": "79070900",
         "logradouro": "Avenida Costa e Silva",
         "numero": "1",
         "complemento": "Bloco A",
@@ -54,16 +58,16 @@
       "dadosAcademicos": {
         "instituicao": "UFMS",
         "sugerirInstituicao": false,
-        "instituicaoNome": "",
-        "instituicaoSigla": "",
+        "instituicaoNome": "Universidade Federal de Mato Grosso do Sul",
+        "instituicaoSigla": "UFMS",
         "unidade": "FACOM",
         "sugerirUnidade": false,
-        "unidadeNome": "",
-        "unidadeSigla": "",
+        "unidadeNome": "Engenharia de Controle de Automação",
+        "unidadeSigla": "EGA",
         "nivelAcademico": "Doutorado",
         "interesseConsultor": false,
-        "lattes": "http://lattes.cnpq.br/0000000000000000",
-        "linkedin": "",
+        "lattes": "https://lattes.cnpq.br/5515214286878433",
+        "linkedin": "https://www.linkedin.com/in/leticiabatistarocha/",
         "areaDeConhecimento": {
           "grandeArea": "Ciências Exatas e da Terra",
           "area": "Ciência da Computação",
@@ -87,17 +91,19 @@
         "pergunta222": "Descrição detalhada do projeto submetido via Cypress para o edital 2026."
       },
       "membros": {
-        "nomePesquisador": "Pesquisador Teste"
+        "nomePesquisador": "Camila Minei"
       },
       "atividades": {
         "titulo": "Atividade Principal",
         "descricao": "Descrição da atividade principal do projeto",
         "mesInicio": "1",
         "duracaoMeses": "3",
-        "cargaHorariaSemanal": "10"
+        "cargaHorariaSemanal": "10",
+        "responsavel": "Leticia Teste Coordenadora",
+        "membroAdicional": "Leticia Teste Coordenadora"
       },
       "orcamento": {
-        "faixaFinanciamento": "Faixa A (R$0,00 - R$6.000,00)",
+        "faixaFinanciamento": "Faixa A (R$500,00 - R$10.000,00)",
         "bolsa": {
           "modalidadeBolsa": "Iniciação Científica",
           "nivelBolsa": "IC",
@@ -107,17 +113,27 @@
           "contrapartida": false,
           "tipoPessoa": "",
           "entidade": ""
+        },
+        "bolsaContrapartida": {
+          "modalidadeBolsa": "AT",
+          "nivelBolsa": "NS (R$ 770,00)",
+          "quantidade": 1,
+          "duracaoMeses": "6",
+          "valorTotal": "600,00",
+          "contrapartida": true,
+          "tipoPessoa": "Pessoa Juridica",
+          "entidade": "MEGA JR"
         }
       }
     },
     "anexos": {
       "documentosPessoais": {
-        "categoria": "Formulário de Produção Científica",
-        "arquivo": "formulario-producao-cientifica.pdf"
+        "categoria": "Documento de identificação com foto",
+        "arquivo": "anexo.pdf"
       },
       "documentosProposta": {
-        "categoria": "Declaração de Anuência",
-        "arquivo": "declaracao-anuencia.pdf"
+        "categoria": "Carta de Apresentação",
+        "arquivo": "anexo.pdf"
       }
     },
     "termos": {
@@ -153,8 +169,12 @@
       "endereco": {
         "cep_formatoInvalido": "00000000",
         "cep_inexistente": "00000-000",
-        "numero_acima8chars": "123456789",
-        "complemento_acima16chars": "Complemento muito longo demais",
+        "cep_incompleto": "79070",
+        "cep_letras": "79A70-900",
+        "numero_8chars": "12345678",
+        "numero_9chars": "123456789",
+        "complemento_16chars": "Complemento Casa",
+        "complemento_17chars": "Complemento Casa1",
         "logradouro_vazio": "",
         "bairro_vazio": "",
         "estado_vazio": "",
@@ -166,7 +186,9 @@
       },
       "dadosProfissionais": {
         "inicioServico_formatoInvalido": "2015-03-01",
-        "inicioFuncao_formatoInvalido": "2015-03-01"
+        "inicioFuncao_formatoInvalido": "2015-03-01",
+        "funcaoCargo_32chars": "Professor com Cargo Muito Longo1",
+        "funcaoCargo_33chars": "Professor com Cargo Muito Longo12"
       }
     },
     "apresentacao": {
@@ -183,6 +205,19 @@
         }
       }
     },
+    "anexos": {
+      "documentosPessoais": {
+        "categoria": "Documento de identificação com foto",
+        "arquivo_formato_invalido": "formato-incorreto.webp",
+        "arquivo_tamanho_excedido": "tamanho-excedido.pdf"
+      },
+       "documentosProposta": {
+        "categoria": "Carta de Apresentação",
+        "arquivo_formato_invalido": "formato-incorreto.webp",
+        "arquivo_tamanho_excedido": "tamanho-excedido.pdf"
+      }
+    },
+
     "termos": {
       "termoDeAceite": {
         "liEEstouDeAcordo": false
