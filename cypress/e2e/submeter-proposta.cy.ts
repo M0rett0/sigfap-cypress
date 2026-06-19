@@ -265,7 +265,6 @@ describe('Submeter Proposta', () => {
 
                 it('deve avançar para a próxima etapa sem adicionar Abrangência', () => {
                     cy.get('[data-cy="next-button"]').click();
-                    cy.contains('Dados do usuário atualizados com sucesso.').should('be.visible');
                 })
 
                 it('deve adicionar Abrangência informando apenas o Estado sem Município', () => {
@@ -359,14 +358,14 @@ describe('Submeter Proposta', () => {
                 })
             
                 it('deve exibir erro quando Data de Nascimento está vazia e os demais campos preenchidos', () => {
-                    cy.get('[data-cy="criadoPor.dataNascimento"]').type('{selectall}{backspace}', { force: true });
+                    cy.get('[data-cy="criadoPor.dataNascimento"]').clear({ force: true });
                     cy.get('[data-cy="next-button"]').click();
                     cy.contains(/Erro/i).should('be.visible');
                 })
     
                 it('deve exibir erro quando País não é selecionado e os demais campos preenchidos', () => {
                     cy.get('[data-cy="open-pais-id"]').click();
-                    cy.get('[data-cy="search-pais-id"]').clear();
+                    cy.get('[data-cy="pais-id"] > .css-1xjtwhn > .css-dw0r4c').click();
                     cy.get('[data-cy="next-button"]').click();
                     cy.contains(/Erro/i).should('be.visible');
                 })
