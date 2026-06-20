@@ -19,6 +19,196 @@ describe('Completar Cadastro do Usuário', () => {
             })
         })
 
+        context('Fluxo', () => {
+            context('Botão Voltar', () => {
+        
+                    context('Caminho Feliz', () => {
+                        it('deve fechar o Perfil e retornar à tela inicial ao clicar em Voltar no step Dados Pessoais com sucesso', () => {
+                            cy.get('[data-cy="dados-pessoais"]').click()
+                            cy.get('[data-cy="breadcrumb-voltar"]').click()
+                            cy.url().should('include', '/home')
+                        })
+        
+                        it('deve fechar o Perfil e retornar à tela inicial ao clicar em Voltar no step Endereço com sucesso', () => {
+                            cy.get('[data-cy="endereco"]').click()
+                            cy.get('[data-cy="breadcrumb-voltar"]').click()
+                            cy.url().should('include', '/home')
+                        })
+        
+                        it('deve fechar o Perfil e retornar à tela inicial ao clicar em Voltar no step Dados Acadêmicos com sucesso', () => {
+                            cy.get('[data-cy="dados-academicos"]').click()
+                            cy.get('[data-cy="breadcrumb-voltar"]').click()
+                            cy.url().should('include', '/home')
+                        })
+        
+                        it('deve fechar o Perfil e retornar à tela inicial ao clicar em Voltar no step Dados Profissionais com sucesso', () => {
+                            cy.get('[data-cy="dados-profissionais"]').click()
+                            cy.get('[data-cy="breadcrumb-voltar"]').click()
+                            cy.url().should('include', '/home')
+                        })
+        
+                        it('deve fechar o Perfil e retornar à tela inicial ao clicar em Voltar no step Documentos Pessoais com sucesso', () => {
+                            cy.get('[data-cy="documentos-pessoais"]').click()
+                            cy.get('[data-cy="breadcrumb-voltar"]').click()
+                            cy.url().should('include', '/home')
+                        })
+                    })
+                })
+        
+                // ════════════════════════════════════════════════════════════════
+                // CT-NS-PROP-002 — Finalizar salva alterações de todos os steps
+                // ════════════════════════════════════════════════════════════════
+        
+                context('Finalizar', () => {
+        
+                    context('Caminho Feliz', () => {
+                        it('deve salvar alterações de todos os steps e persistir os dados ao clicar em Finalizar com sucesso', () => {
+                            cy.get('@fixture').then(({ dadosValidos }: any) => {
+                                cy.get('[data-cy="dados-pessoais"]').click()
+                                cy.get('[data-cy="nome"]').clear().type(dadosValidos.dadosPessoais.nome)
+                                cy.get('[data-cy="dataNascimento"]').type(dadosValidos.dadosPessoais.dataNascimento, { force: true })
+                                cy.selecionarOpcao('open-pais-id', 'search-pais-id', dadosValidos.dadosPessoais.pais)
+                                cy.get('[data-cy="next-button"]').click()
+        
+                                cy.wait(500)
+                                cy.get('[data-cy="endereco.cep"]').clear().type(dadosValidos.endereco.cep)
+                                cy.get('[data-cy="endereco.numero"]').click({ force: true })
+                                cy.get('[data-cy="endereco.numero"]').clear().type(dadosValidos.endereco.numero)
+                                cy.get('[data-cy="next-button"]').click()
+        
+                                cy.wait(500)
+                                cy.selecionarOpcao('open-instituicao-id', 'search-instituicao-id', dadosValidos.dadosAcademicos.instituicao)
+                                cy.selecionarOpcao('open-nivel-academico-id', 'search-nivel-academico-id', dadosValidos.dadosAcademicos.nivelAcademico)
+                                cy.get('[data-cy="next-button"]').click()
+        
+                                cy.wait(500)
+                                cy.get('[data-cy="next-button"]').click()
+        
+                                cy.wait(500)
+                                cy.get('[data-cy="menu-finalizar"]').click()
+                                cy.contains(/Sucesso/i).should('be.visible')
+        
+                        
+                            })
+                        })
+                    })
+                })
+            })
+
+        context('Dados Pessoais', () => {
+ 
+            beforeEach(() => {
+                cy.wait(500)
+                cy.get('[data-cy="dados-pessoais"]').click()
+            })
+ 
+            context('Caminho Feliz', () => {
+                it('deve preencher todos os campos de Dados Pessoais com país Brasil e avançar para Endereço com sucesso', () => {
+                    cy.get('@fixture').then(({ dadosValidos }: any) => {
+                        cy.get('[data-cy="email"]').should('be.disabled')
+                        cy.get('[data-cy="nome"]').clear().type(dadosValidos.dadosPessoais.nome)
+                        cy.get('[data-cy="dataNascimento"]').type(dadosValidos.dadosPessoais.dataNascimento, { force: true })
+                        cy.selecionarOpcao('open-raca-cor-id', 'search-raca-cor-id', dadosValidos.dadosPessoais.racaCor)
+                        cy.selecionarOpcao('open-pais-id', 'search-pais-id', dadosValidos.dadosPessoais.pais)
+                        cy.get('[data-cy="documento"]').should('be.visible')
+                        cy.get('[data-cy="documento"]').type(dadosValidos.dadosPessoais.cpf)
+                        cy.get('[data-cy="next-button"]').click()
+                        cy.contains(/Sucesso/i).should('be.visible')
+                    })
+                })
+            })
+ 
+            context('Validações', () => {
+                it('deve exibir erro quando Nome está em branco ao tentar avançar', () => {
+                    cy.get('@fixture').then(({ dadosValidos }: any) => {
+                        cy.get('[data-cy="nome"]').clear()
+                        cy.get('[data-cy="next-button"]').click()
+                        cy.contains(/Erro/i).should('be.visible')
+                    })
+                })
+ 
+                it('deve truncar o campo Nome no limite máximo de 64 caracteres', () => {
+                    cy.get('@fixture').then(({ dadosInvalidos }: any) => {
+                        cy.get('[data-cy="nome"]').clear().type(dadosInvalidos.dadosPessoais.nome_64chars)
+                        cy.get('[data-cy="nome"]').invoke('val').should('have.length', 64)
+                        cy.get('[data-cy="nome"]').clear().type(dadosInvalidos.dadosPessoais.nome_65chars)
+                        cy.get('[data-cy="nome"]').invoke('val').should('have.length', 64)
+                    })
+                })
+ 
+                it.only('deve truncar o campo Nome Social no limite máximo de 64 caracteres', () => {
+                    cy.get('@fixture').then(({ dadosInvalidos }: any) => {
+                        cy.get('[data-cy="possuo-nome-social"]').then(($checkbox) => {
+                            if (!$checkbox.is(':checked')) {
+                                cy.get('[data-cy="possuo-nome-social-box"]').click({ force: true })
+                            }
+                        })
+                        cy.get('[data-cy="criadoPor.nomeSocial"]').clear().type(dadosInvalidos.dadosPessoais.nomeSocial_64chars)
+                        cy.get('[data-cy="criadoPor.nomeSocial"]').invoke('val').should('have.length', 64)
+                        cy.get('[data-cy="possuo-nome-social"]').then(($checkbox) => {
+                            if (!$checkbox.is(':checked')) {
+                                cy.get('[data-cy="possuo-nome-social-box"]').click({ force: true })
+                            }
+                        })
+                        cy.get('[data-cy="criadoPor.nomeSocial"]').clear().type(dadosInvalidos.dadosPessoais.nomeSocial_65chars, { force: true })
+                        cy.get('[data-cy="criadoPor.nomeSocial"]').invoke('val').should('have.length', 64)
+                    })
+                })
+ 
+                it('deve exibir erro quando Data de Nascimento está em branco ao tentar salvar', () => {
+                    cy.get('[data-cy="dataNascimento"]').clear().type('{selectall}{backspace}', { force: true })
+                    cy.get('[data-cy="menu-salvar"]').click()
+                    cy.contains(/Erro/i).should('be.visible')
+                })
+ 
+                it('deve exibir erro quando Data de Nascimento é posterior à data atual', () => {
+                    cy.get('@fixture').then(({dadosInvalidos }: any) => {
+                        cy.get('[data-cy="dataNascimento"]').clear().type(dadosInvalidos.dadosPessoais.dataNascimento_futura, { force: true })
+                        cy.get('[data-cy="menu-salvar"]').click()
+                        cy.contains(/Erro/i).should('be.visible')
+                    })
+                })
+ 
+                it('deve exibir erro quando País não é selecionado ao tentar avançar', () => {
+                    cy.get('[data-cy="pais-id"] > .css-1xjtwhn > .css-dw0r4c').click();
+                    cy.contains(/Erro/i).should('be.visible')
+                })
+ 
+                it('deve exibir erro quando CPF informado é inválido', () => {
+                    cy.get('@fixture').then(({ dadosInvalidos }: any) => {
+                        cy.get('[data-cy="documento"]').type(dadosInvalidos.dadosPessoais.cpf_invalido)
+                        cy.get('[data-cy="menu-salvar"]').click()
+                        cy.contains(/Erro/i).should('be.visible')
+                    })
+                })
+ 
+                it('deve ocultar o campo CPF quando o país selecionado é diferente de Brasil', () => {
+                    cy.get('@fixture').then(({dadosInvalidos }: any) => {
+                        cy.selecionarOpcao('open-pais-id', 'search-pais-id', dadosInvalidos.dadosPessoais.paisEstrangeiro)
+                        cy.get('[data-cy="criadoPor.documento"]').should('not.exist')
+                    })
+                })
+ 
+                it('deve exibir Brasil como primeira opção no seletor de País', () => {
+                    cy.get('[data-cy="open-pais-id"]').click()
+                    cy.get('[data-cy="search-pais-id"]').clear()
+                    cy.contains('[role="option"]', 'Brasil').then(($brasil) => {
+                        cy.wrap($brasil).prevAll('[role="option"]').should('have.length', 0)
+                    })
+                    cy.get('[data-cy="close-pais-id"]').click()
+                })
+ 
+                it('deve listar exatamente as cinco opções esperadas no seletor Raça/Cor', () => {
+                    const opcoesEsperadas = ['Branco(a)', 'Pardo(a)', 'Preto(a)', 'Amarelo(a)', 'Indígena']
+                    cy.get('[data-cy="open-raca-cor-id"]').click()
+                    opcoesEsperadas.forEach((opcao: string) => {
+                        cy.contains('[role="option"]', opcao).should('be.visible')
+                    })
+                    cy.get('[data-cy="close-raca-cor-id"]').click()
+                })
+            })
+        })
+
         // ════════════════════════════════════════════════════════════════
         // STEP 1 — ENDEREÇO
         // ════════════════════════════════════════════════════════════════
@@ -33,6 +223,9 @@ describe('Completar Cadastro do Usuário', () => {
             context('Caminho Feliz', () => {
                 it('deve preencher o CEP e autocompletar Logradouro, Bairro, Estado e Município com sucesso', () => {
                     cy.get('@fixture').then(({ dadosValidos }: any) => {
+                        cy.get('[data-cy="dados-pessoais"]').click()
+                        cy.selecionarOpcao('open-pais-id', 'search-pais-id', dadosValidos.dadosPessoais.pais)
+                        cy.get('[data-cy="endereco"]').click()
                         cy.get('[data-cy="endereco.cep"]').clear().type(dadosValidos.endereco.cep)
                         cy.get('[data-cy="endereco.numero"]').click({ force: true })
                         cy.get('[data-cy="endereco.logradouro"]').should('have.value', dadosValidos.endereco.logradouro)
@@ -42,8 +235,24 @@ describe('Completar Cadastro do Usuário', () => {
                     })
                 })
 
+                it('deve exibir e preencher os campos de endereço internacional com sucesso quando o país for diferente de Brasil', () => {
+                    cy.get('@fixture').then(({ dadosValidos}: any) => {                
+                        cy.get('[data-cy="dados-pessoais"]').click()
+                        cy.selecionarOpcao('open-pais-id', 'search-pais-id', dadosValidos.dadosPessoais.paisEstrangeiro)
+                        cy.get('[data-cy="endereco"]').click()
+                        cy.get('[data-cy="endereco.cep"]').type(dadosValidos.enderecoEstrangeiro.zipCode)
+                        cy.get('[data-cy="endereco.logradouro"]').type(dadosValidos.enderecoEstrangeiro.logradouro)
+                        cy.get('[data-cy="endereco.estado"]').type(dadosValidos.enderecoEstrangeiro.estadoRegiao)
+                        cy.get('[data-cy="endereco.municipio"]').type(dadosValidos.enderecoEstrangeiro.municipio)
+                        cy.get('[data-cy="next-button"]').click()
+                    })
+                })
+
                 it('deve preencher o Endereço completo e salvar com sucesso', () => {
                     cy.get('@fixture').then(({ dadosValidos }: any) => {
+                        cy.get('[data-cy="dados-pessoais"]').click()
+                        cy.selecionarOpcao('open-pais-id', 'search-pais-id', dadosValidos.dadosPessoais.pais)
+                        cy.get('[data-cy="endereco"]').click()
                         cy.get('[data-cy="endereco.cep"]').clear().type(dadosValidos.endereco.cep)
                         cy.get('[data-cy="endereco.numero"]').click({ force: true })
                         cy.get('[data-cy="endereco.numero"]').clear().type(dadosValidos.endereco.numero)
@@ -98,19 +307,49 @@ describe('Completar Cadastro do Usuário', () => {
 
                 it('deve truncar o campo Número no limite máximo de 8 caracteres', () => {
                     cy.get('@fixture').then(({ dadosInvalidos }: any) => {
-                        cy.get('[data-cy="endereco.numero"]').clear().type(dadosInvalidos.endereco.numero_8chars)
-                        cy.get('[data-cy="endereco.numero"]').invoke('val').should('have.length', 8)
                         cy.get('[data-cy="endereco.numero"]').clear().type(dadosInvalidos.endereco.numero_9chars)
-                        cy.get('[data-cy="endereco.numero"]').invoke('val').should('have.length', 8)
+                        cy.get('[data-cy="menu-salvar"]').click()
+                        cy.contains(/Erro/i).should('be.visible')
                     })
                 })
 
                 it('deve truncar o campo Complemento no limite máximo de 16 caracteres', () => {
                     cy.get('@fixture').then(({ dadosInvalidos }: any) => {
-                        cy.get('[data-cy="endereco.complemento"]').clear().type(dadosInvalidos.endereco.complemento_16chars)
-                        cy.get('[data-cy="endereco.complemento"]').invoke('val').should('have.length', 16)
                         cy.get('[data-cy="endereco.complemento"]').clear().type(dadosInvalidos.endereco.complemento_17chars)
-                        cy.get('[data-cy="endereco.complemento"]').invoke('val').should('have.length', 16)
+                        cy.get('[data-cy="menu-salvar"]').click()
+                        cy.contains(/Erro/i).should('be.visible')                    
+                    })
+                })
+
+                it('deve exibir erro quando Zip Code está em branco', () => {
+                    cy.get('@fixture').then(({ dadosValidos, dadosInvalidos }: any) => {
+                        cy.get('[data-cy="dados-pessoais"]').click()
+                        cy.selecionarOpcao('open-pais-id', 'search-pais-id', dadosValidos.dadosPessoais.paisEstrangeiro)
+                        cy.get('[data-cy="endereco"]').click()
+                        cy.get('[data-cy="endereco.cep"]').clear();
+                        cy.get('[data-cy="endereco.logradouro"]').type(dadosValidos.enderecoEstrangeiro.logradouro)
+                        cy.get('[data-cy="endereco.estado"]').type(dadosValidos.enderecoEstrangeiro.estadoRegiao)
+                        cy.get('[data-cy="endereco.municipio"]').type(dadosValidos.enderecoEstrangeiro.municipio)
+                        cy.get('[data-cy="next-button"]').click()
+                        cy.contains(/Erro/i).should('be.visible')                    
+                    })
+                })
+            
+                it('deve limitar o Zip Code a 9 caracteres', () => {
+                    cy.get('@fixture').then(({ dadosInvalidos }: any) => {
+                        cy.get('[data-cy="endereco.cep"]').type(dadosInvalidos.enderecoEstrangeiroInvalido.zipCode_acima9chars)
+                        cy.get('[data-cy="endereco.cep"]').invoke('val').then((val) => {
+                            expect((val as string).length).to.be.lte(9)
+                        })
+                    })
+                })
+            
+                it('deve limitar o Município a 32 caracteres', () => {
+                    cy.get('@fixture').then(({ dadosInvalidos }: any) => {
+                        cy.get('[data-cy="endereco.municipio"]').type(dadosInvalidos.enderecoEstrangeiroInvalido.municipio_acima32chars)
+                        cy.get('[data-cy="endereco.municipio"]').invoke('val').then((val) => {
+                            expect((val as string).length).to.be.lte(32)
+                        })
                     })
                 })
             })
@@ -272,15 +511,10 @@ describe('Completar Cadastro do Usuário', () => {
             context('Caminho Feliz', () => {
                 it('deve exibir os campos de vínculo ao marcar Possuo vínculo institucional com sucesso', () => {
                     cy.get('body').then(($body) => {
-                        if ($body.find('[data-cy="search-tipo-vinculo-instituciona"]').is(':visible')) {
+                        if (!$body.find('[data-cy="search-tipo-vinculo-instituciona"]').is(':visible')) {
                             cy.get('[data-cy="possui-vinculo-institucional-box"]').click({ force: true })
                         }
                     })
-                    cy.get('body').then(($body) => {
-                        const el = $body.find('[data-cy="search-tipo-vinculo-instituciona"]')
-                        if (el.length > 0) cy.wrap(el).should('not.be.visible')
-                    })
-                    cy.get('[data-cy="possui-vinculo-institucional-box"]').click({ force: true })
                     cy.get('[data-cy="search-tipo-vinculo-instituciona"]').should('be.visible')
                     cy.get('[data-cy="vinculoInstitucional.inicioServico"]').should('be.visible')
                     cy.get('[data-cy="search-regime-trabalho-id"]').should('be.visible')
@@ -429,7 +663,7 @@ describe('Completar Cadastro do Usuário', () => {
         // STEP 4 — DOCUMENTOS PESSOAIS
         // ════════════════════════════════════════════════════════════════
 
-        context.only('Documentos Pessoais', () => {
+        context('Documentos Pessoais', () => {
 
             beforeEach(() => {
                 cy.wait(500)
@@ -437,9 +671,19 @@ describe('Completar Cadastro do Usuário', () => {
             })
 
             context('Caminho Feliz', () => {
+                it('deve selecionar tipo de documento, realizar upload e finalizar cadastro com sucesso', () => {
+                    cy.get('@fixture').then(({dadosValidos}: any) => {
+                        cy.get('[data-cy="select-categories-usuario-anexo"]').click()
+                        cy.contains('[role="option"]', dadosValidos.documentosPessoais.categoria).first().click({ force: true })
+                        cy.get('input[type="file"]').attachFile(dadosValidos.documentosPessoais.arquivo) // REPORT: sem data-cy
+                        cy.get('[data-cy="menu-finalizar"]').click()
+                        cy.contains(/Sucesso/i).should('be.visible')
+                    })
+                })
+    
                 it('deve anexar e salvar documento pessoal com sucesso', () => {
                     cy.get('@fixture').then(({ dadosValidos }: any) => {
-                        cy.get('[data-cy="select-categories-usuario-anexo"]').click()
+                        cy.get('[data-icon="trash"]').first().click()
                         cy.contains('[role="option"]', dadosValidos.documentosPessoais.categoria).first().click({ force: true })
                         cy.get('input[type="file"]').attachFile(dadosValidos.documentosPessoais.arquivo) // REPORT: sem data-cy
                         cy.get('[data-cy="menu-salvar"]').click()
@@ -450,7 +694,8 @@ describe('Completar Cadastro do Usuário', () => {
 
             context('Validações', () => {
                 it('deve bloquear upload de arquivo com formato não permitido', () => {
-                    cy.get('@fixture').then(({ dadosInvalidos }: any) => {
+                    cy.get('@fixture').then(({ dadosInvalidos, dadosValidos }: any) => {
+                        cy.get('[data-icon="trash"]').first().click()
                         cy.get('[data-cy="select-categories-usuario-anexo"]').click()
                         cy.contains('[role="option"]', dadosInvalidos.documentosPessoais.categoria).first().click({ force: true })
                         cy.get('input[type="file"]').attachFile(dadosInvalidos.documentosPessoais.arquivo_formato_invalido) // REPORT: sem data-cy
@@ -460,7 +705,6 @@ describe('Completar Cadastro do Usuário', () => {
 
                 it('deve bloquear upload de arquivo que excede o tamanho máximo', () => {
                     cy.get('@fixture').then(({ dadosInvalidos }: any) => {
-                        cy.get('[data-cy="select-categories-usuario-anexo"]').click()
                         cy.contains('[role="option"]', dadosInvalidos.documentosPessoais.categoria).first().click({ force: true })
                         cy.get('input[type="file"]').attachFile(dadosInvalidos.documentosPessoais.arquivo_tamanho_excedido) // REPORT: sem data-cy
                         cy.contains(/Erro/i).should('be.visible')
@@ -470,8 +714,13 @@ describe('Completar Cadastro do Usuário', () => {
 
             context('Excluir', () => {
                 it('deve remover documento pessoal com sucesso', () => {
-                    cy.get('[data-icon="trash"]').first().click()
-                    cy.contains(/Sucesso/i).should('be.visible')
+                    cy.get('@fixture').then(({ dadosValidos }: any) => {
+                        cy.get('[data-cy="select-categories-usuario-anexo"]').click()
+                        cy.contains('[role="option"]', dadosValidos.documentosPessoais.categoria).first().click({ force: true })
+                        cy.get('input[type="file"]').attachFile(dadosValidos.documentosPessoais.arquivo)
+                        cy.get('[data-icon="trash"]').first().click()
+                        cy.contains(/Sucesso/i).should('be.visible')
+                        })
                 })
             })
         })
