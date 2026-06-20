@@ -1,0 +1,103 @@
+{
+  "login": {
+    "email": "batista.rocha@ufms.br",
+    "senha": "Leehfofa24."
+  },
+  "dadosValidos": {
+    "dadosPessoais": {
+      "nome": "João Batista Rocha",
+      "nomeSocial": "João Rocha",
+      "dataNascimento": "15/05/1990",
+      "racaCor": "Pardo(a)",
+      "pais": "Brasil",
+      "paisEstrangeiro": "Estados Unidos",
+      "cpf": "529.982.247-25"
+    },
+    "endereco": {
+      "cep": "79002-180",
+      "cepSemHifen": "79002180",
+      "logradouro": "Rua Dom Aquino",
+      "bairro": "Centro",
+      "estado": "Mato Grosso do Sul",
+      "municipio": "Campo Grande",
+      "numero": "1234",
+      "complemento": "Sala 10"
+    },
+    "enderecoEstrangeiro": {
+      "zipCode": "90210",
+      "logradouro": "Beverly Hills Drive",
+      "estadoRegiao": "California",
+      "municipio": "Beverly Hills"
+    },
+    "dadosAcademicos": {
+      "instituicao": "UFMS",
+      "unidade": "FACOM",
+      "nivelAcademico": "Mestrado",
+      "lattes": "http://lattes.cnpq.br/1234567890123456",
+      "linkedin": "https://linkedin.com/in/coordenador-teste",
+      "instituicaoNome": "Universidade de Teste",
+      "instituicaoSigla": "UT",
+      "unidadeNome": "Faculdade de Teste",
+      "unidadeSigla": "FT",
+      "areaDeConhecimento": {
+        "grandeArea": "Ciências Exatas e da Terra",
+        "area": "Ciência da Computação",
+        "subArea": "Metodologia e Técnicas da Computação",
+        "especialidade": "Linguagens de Programação"
+      }
+    },
+    "dadosAcademicosEdicao": {
+      "grandeArea": "Ciências Humanas"
+    },
+    "dadosProfissionais": {
+      "tipoVinculo": "Servidor Público",
+      "inicioServico": "01/03/2015",
+      "regimeTrabalho": "Dedicação Exclusiva",
+      "funcaoCargo": "Analista de Sistemas",
+      "inicioFuncao": "01/06/2018"
+    },
+    "documentosPessoais": {
+      "categoria": "Documento de identificação com foto",
+      "arquivo": "anexo.pdf",
+      "arquivo_adicionado": "documento-de-identificacao-com-foto.pdf"
+    }
+  },
+  "dadosInvalidos": {
+    "dadosPessoais": {
+      "nome_64chars": "Joao Batista da Rocha Silva Pereira dos Santos Almeida Costa Liz",
+      "nome_65chars": "Joao Batista da Rocha Silva Pereira dos Santos Almeida Costa Lima",
+      "nomeSocial_64chars": "Joao Batista da Rocha Silva Pereira dos Santos Almeida Costa Liz",
+      "nomeSocial_65chars": "Joao Batista da Rocha Silva Pereira dos Santos Almeida Costa Lima",
+      "dataNascimento_futura": "15/05/2099",
+      "cpf_invalido": "111.111.111-11",
+      "nomeEstrangeiro": "John Smith",
+      "paisEstrangeiro": "Estados Unidos"
+    },
+    "endereco": {
+      "cep_letras": "abcde-fgh",
+      "cep_incompleto": "79002-18",
+      "cep_inexistente": "00000-000",
+      "numero_8chars": "12345678",
+      "numero_9chars": "123456789",
+      "complemento_16chars": "Bloco A Apt 1234",
+      "complemento_17chars": "Bloco A Apt 12345"
+    },
+    "enderecoEstrangeiroInvalido": {
+      "zipCode_acima9chars": "1234567890",
+      "municipio_acima32chars": "Municipio com nome muito grande X"
+    },
+    "dadosAcademicos": {
+      "lattes_acima1024chars": "http://lattes.cnpq.br/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "linkedin_acima1024chars": "https://linkedin.com/in/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "dadosProfissionais": {
+      "funcaoCargo_32chars": "Analista de Sistemas Sênior Plus",
+      "funcaoCargo_33chars": "Analista de Sistemas Sênior Plus!"
+    },
+    "documentosPessoais": {
+      "categoria": "Documento de identificação com foto",
+      "arquivo_formato_invalido": "formato-incorreto.webp",
+      "arquivo_tamanho_excedido": "tamanho-excedido.pdf"
+    }
+  }
+}
