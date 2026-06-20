@@ -44,15 +44,15 @@ Cypress.Commands.add('navegarParaProposta', (substep: string) => {
 Cypress.Commands.add('marcarVinculoInstitucional', () => {
   cy.get('[data-cy="possui-vinculo-institucional"]').then(($checkbox) => {
     if (!$checkbox.is(':checked')) {
-      cy.wrap($checkbox).click({ force: true })
+      cy.get('[data-cy="possui-vinculo-institucional-box"]').click()
     }
   })
 })
- 
+
 Cypress.Commands.add('marcarVinculoEmpregaticio', () => {
   cy.get('[data-cy="possui-vinculo-empregaticio"]').then(($checkbox) => {
     if (!$checkbox.is(':checked')) {
-      cy.wrap($checkbox).click({ force: true })
+      cy.get('[data-cy="possui-vinculo-empregaticio-box"]').click()
     }
   })
 })
