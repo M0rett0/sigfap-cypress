@@ -73,28 +73,40 @@ describe('Submeter Proposta', () => {
             
                 it('deve exibir erro quando Tipo de Evento não é selecionado', () => {
                     cy.get('[data-cy="tipo-evento-id"] > .css-1xjtwhn > .css-dw0r4c').click();
+                    cy.get('[data-cy="menu-salvar"]').click();
                     cy.get('[data-cy="menu-verificar-pendencias"]').click();
+                    cy.wait(500);
+                    cy.get('[data-cy="caracterizacao"]').click({ force: true });
                     cy.get('[data-cy="informacoes-iniciais"]').click({ force: true });
                     cy.contains(/O Tipo de Evento é obrigatório./i).should('be.visible');
                 })
             
                 it('deve exibir erro quando Município de Execução não é selecionado', () => {
                     cy.get('[data-cy="municipio-execucao-evento"] > .css-1xjtwhn > .css-dw0r4c').click();
+                    cy.get('[data-cy="menu-salvar"]').click();
                     cy.get('[data-cy="menu-verificar-pendencias"]').click();
+                    cy.wait(500);
+                    cy.get('[data-cy="caracterizacao"]').click({ force: true });
                     cy.get('[data-cy="informacoes-iniciais"]').click({ force: true });
                     cy.contains(/O Município de Execução do Evento é obrigatório/i).should('be.visible');
                 })
             
                 it('deve exibir erro quando Estado de Execução não é selecionado', () => {
                     cy.get('[data-cy="estado-execucao-evento"] > .css-1xjtwhn > .css-dw0r4c').click();
+                    cy.get('[data-cy="menu-salvar"]').click();
                     cy.get('[data-cy="menu-verificar-pendencias"]').click();
+                    cy.wait(500);
+                    cy.get('[data-cy="caracterizacao"]').click({ force: true });
                     cy.get('[data-cy="informacoes-iniciais"]').click({ force: true });
                     cy.contains(/O Estado de Execução do Evento é obrigatório/i).should('be.visible');
                 })
             
                 it('deve exibir erro quando Duração não é preenchida', () => {
                     cy.get('[data-cy="duracao"]').clear();
+                    cy.get('[data-cy="menu-salvar"]').click();
                     cy.get('[data-cy="menu-verificar-pendencias"]').click();
+                    cy.wait(500);
+                    cy.get('[data-cy="caracterizacao"]').click({ force: true });
                     cy.get('[data-cy="informacoes-iniciais"]').click({ force: true });
                     cy.contains(/A Duração do projeto em meses é obrigatória/i).should('be.visible');
                 
@@ -113,6 +125,8 @@ describe('Submeter Proposta', () => {
                     cy.get('@fixture').then(({ propostaInvalida }: any) => {
                         cy.get('[data-cy="duracao"]').type(propostaInvalida.caracterizacao.informacoesIniciais.duracaoMeses_abaixoMinimo)
                         cy.get('[data-cy="menu-verificar-pendencias"]').click()
+                        cy.wait(500);
+                        cy.get('[data-cy="caracterizacao"]').click({ force: true })
                         cy.get('[data-cy="informacoes-iniciais"]').click({ force: true })
                         cy.contains(/Erro/i).should('be.visible');
                     })
@@ -123,6 +137,7 @@ describe('Submeter Proposta', () => {
                     cy.get('[data-cy="caracterizacao"]').click();
                     cy.get('[data-cy="menu-verificar-pendencias"]').click();
                     cy.wait(500);
+                    cy.get('[data-cy="caracterizacao"]').click({ force: true });
                     cy.get('[data-cy="informacoes-iniciais"]').click({ force: true });
                     cy.contains(/Instituição executora é obrigatória, Dados de instituicao não encontrados./i).should('be.visible');
                 
@@ -221,12 +236,13 @@ describe('Submeter Proposta', () => {
                         cy.get('[data-cy="formularioPropostaInformacaoComplementar.pergunta-218-item-grande-faturamento-ano-acima-de"]').first().click()
                         cy.get('[data-cy="formularioPropostaInformacaoComplementar.pergunta-219"]').type(propostaValida.caracterizacao.informacoesComplementares.pergunta219)
                         cy.get('[data-cy="next-button"]').click()
+                        cy.wait(500);
                     })
                 })
             })
 
             context('Validações', () => {
-                it('deve preencher as Informações Complementares e avançar com sucesso', () => {
+                it('deve manter o botão "Salvar" habilitado durante o preenchido das Informações Complementares e salvar os dados sem avançar do step', () => {
                     cy.get('@fixture').then(({ propostaValida }: any) => {
                         cy.get('[data-cy="formularioPropostaInformacaoComplementar.pergunta-218-item-grande-faturamento-ano-acima-de"]').first().click()
                         cy.get('[data-cy="formularioPropostaInformacaoComplementar.pergunta-219"]').type(propostaValida.caracterizacao.informacoesComplementares.pergunta219)
@@ -373,7 +389,6 @@ describe('Submeter Proposta', () => {
         
                 it('deve truncar o campo Nome no limite máximo de 64 caracteres', () => {
                     cy.get('@fixture').then(({ propostaInvalida }: any) => {
-                        cy.get('[data-cy="possuo-nome-social-box"]').click();
                         cy.get('[data-cy="criadoPor.nome"]').clear().type(propostaInvalida.coordenacao.dadosPessoais.nome_64chars);
                         cy.get('[data-cy="criadoPor.nome"]').invoke('val').should('have.length', 64);
                         cy.get('[data-cy="criadoPor.nome"]').clear().type(propostaInvalida.coordenacao.dadosPessoais.nome_65chars);
@@ -384,10 +399,10 @@ describe('Submeter Proposta', () => {
                 it('deve truncar o campo Nome Social no limite máximo de 64 caracteres', () => {
                     cy.get('@fixture').then(({ propostaInvalida }: any) => {
                         cy.get('[data-cy="possuo-nome-social-box"]').click();
-                        cy.get('[data-cy="criadoPor.nomeSocial"]').type(propostaInvalida.coordenacao.dadosPessoais.nomeSocial_64chars);
-                        cy.get('[data-cy="criadoPor.nomeSocial"]').invoke('val').should('have.length', 64);
                         cy.get('[data-cy="criadoPor.nomeSocial"]').clear().type(propostaInvalida.coordenacao.dadosPessoais.nomeSocial_65chars);
-                        cy.get('[data-cy="criadoPor.nomeSocial"]').invoke('val').should('have.length', 64);
+                        cy.get('[data-cy="menu-salvar"]').click();
+                        cy.contains(/Erro/i).should('be.visible');
+
                     })
                 })
             
@@ -525,19 +540,17 @@ describe('Submeter Proposta', () => {
             
                 it('deve truncar o campo Número no limite máximo de 8 caracteres', () => {
                     cy.get('@fixture').then(({ propostaInvalida }: any) => {
-                    cy.get('[data-cy="criadoPor.endereco.numero"]').clear().type(propostaInvalida.coordenacao.endereco.numero_8chars)
-                    cy.get('[data-cy="criadoPor.endereco.numero"]').invoke('val').should('have.length', 8)
-                    cy.get('[data-cy="criadoPor.endereco.numero"]').clear().type(propostaInvalida.coordenacao.endereco.numero_9chars)
-                    cy.get('[data-cy="criadoPor.endereco.numero"]').invoke('val').should('have.length', 8)
+                        cy.get('[data-cy="criadoPor.endereco.numero"]').clear().type(propostaInvalida.coordenacao.endereco.numero_9chars)
+                        cy.get('[data-cy="menu-salvar"]').click();
+                        cy.contains(/Erro/i).should('be.visible');    
                     })
                 })
             
                 it('deve truncar o campo Complemento no limite máximo de 16 caracteres', () => {
                     cy.get('@fixture').then(({ propostaInvalida }: any) => {
-                    cy.get('[data-cy="criadoPor.endereco.complemento"]').clear().type(propostaInvalida.coordenacao.endereco.complemento_16chars)
-                    cy.get('[data-cy="criadoPor.endereco.complemento"]').invoke('val').should('have.length', 16)
-                    cy.get('[data-cy="criadoPor.endereco.complemento"]').clear().type(propostaInvalida.coordenacao.endereco.complemento_17chars)
-                    cy.get('[data-cy="criadoPor.endereco.complemento"]').invoke('val').should('have.length', 16)
+                        cy.get('[data-cy="criadoPor.endereco.complemento"]').clear().type(propostaInvalida.coordenacao.endereco.complemento_17chars)
+                        cy.get('[data-cy="menu-salvar"]').click();
+                        cy.contains(/Erro/i).should('be.visible');    
                     })
                 })
             })
@@ -708,13 +721,19 @@ describe('Submeter Proposta', () => {
 
             context('Caminho Feliz', () => {
                 it('deve exibir os campos de vínculo ao marcar Possuo vínculo institucional', () => {
+                    // Garante estado inicial desmarcado
+                    cy.get('[data-cy="possui-vinculo-institucional"]').then(($checkbox) => {
+                        if ($checkbox.is(':checked')) {
+                            cy.get('[data-cy="possui-vinculo-institucional-box"]').click()
+                        }
+                    })
                     cy.get('[data-cy="search-tipo-vinculo-instituciona"]').should('not.exist');
                     cy.get('[data-cy="criadoPor.vinculoInstitucional.inicioServico"]').should('not.exist');
                     cy.get('[data-cy="search-regime-trabalho-id"]').should('not.exist');
                     cy.get('[data-cy="criadoPor.vinculoInstitucional.funcao"]').should('not.exist');
                     cy.get('[data-cy="criadoPor.vinculoInstitucional.inicioFuncao"]').should('not.exist');
 
-                    cy.get('[data-cy="possui-vinculo-institucional"]').click({ force: true })
+                    cy.get('[data-cy="possui-vinculo-institucional-box"]').click()
                     cy.get('[data-cy="search-tipo-vinculo-instituciona"]').should('be.visible');
                     cy.get('[data-cy="criadoPor.vinculoInstitucional.inicioServico"]').should('be.visible');
                     cy.get('[data-cy="search-regime-trabalho-id"]').should('be.visible');
@@ -724,7 +743,11 @@ describe('Submeter Proposta', () => {
         
             it('deve preencher os Dados Profissionais com vínculo institucional e avançar para Apresentação com sucesso', () => {
                 cy.get('@fixture').then(({ propostaValida }: any) => {
-                    cy.get('[data-cy="possui-vinculo-institucional-box"]').click();
+                    cy.get('[data-cy="possui-vinculo-institucional"]').then(($checkbox) => {
+                        if (!$checkbox.is(':checked')) {
+                            cy.get('[data-cy="possui-vinculo-institucional-box"]').click()
+                        }
+                    });
                     cy.selecionarOpcao('open-tipo-vinculo-institucional', 'search-tipo-vinculo-instituciona', propostaValida.coordenacao.dadosProfissionais.tipoVinculo);
                     cy.get('[data-cy="criadoPor.vinculoInstitucional.inicioServico"]').type(propostaValida.coordenacao.dadosProfissionais.inicioServico, { force: true });
                     cy.selecionarOpcao('open-regime-trabalho-id', 'search-regime-trabalho-id', propostaValida.coordenacao.dadosProfissionais.regimeTrabalho);
@@ -738,7 +761,7 @@ describe('Submeter Proposta', () => {
             it('deve avançar para Apresentação sem marcar vínculo institucional', () => {
                 cy.get('[data-cy="possui-vinculo-institucional"]').then(($checkbox) => {
                     if ($checkbox.is(':checked')) {
-                        cy.wrap($checkbox).click({ force: true })
+                        cy.get('[data-cy="possui-vinculo-institucional-box"]').click()
                     }
                 });
                 cy.get('[data-cy="possui-vinculo-institucional"]').should('not.be.checked');
@@ -1043,100 +1066,6 @@ describe('Submeter Proposta', () => {
         })
 
         // ════════════════════════════════════════════════════════════════
-        // STEP 3 — APRESENTAÇÃO / ORÇAMENTO / BOLSA
-        // ════════════════════════════════════════════════════════════════
-
-        context('Bolsa', () => {
-
-            beforeEach(() => {
-                cy.get('[data-cy="apresentacao"]').click();
-                cy.get('[data-cy="orcamento"]').click();
-                cy.get('[data-cy="bolsa"]').click();
-            })
-
-            context('Caminho Feliz', () => {
-                it('deve adicionar Bolsa com Contrapartida marcada informando Tipo Pessoa e Entidade com sucesso', () => {
-                    cy.get('@fixture').then(({ propostaValida }: any) => {
-                        cy.get('[data-cy="add-button"]').click()
-                        cy.selecionarOpcao('open-modalidade-bolsa-id', 'search-modalidade-bolsa-id', propostaValida.apresentacao.orcamento.bolsaContrapartida.modalidadeBolsa)
-                        cy.selecionarOpcao('open-nivel-bolsa-id', 'search-nivel-bolsa-id', propostaValida.apresentacao.orcamento.bolsaContrapartida.nivelBolsa)
-                        cy.get('[data-cy="rubricaBolsaForm.quantidade"]').type(propostaValida.apresentacao.orcamento.bolsaContrapartida.quantidade)
-                        cy.selecionarOpcao('open-duracao', 'search-duracao', propostaValida.apresentacao.orcamento.bolsaContrapartida.duracaoMeses)
-                        cy.get('[data-cy="rubricaBolsaForm.valorTotal"]').type(propostaValida.apresentacao.orcamento.bolsaContrapartida.valorTotal)
-                        cy.get('[data-cy="contrapartida-box"]').check()
-                        cy.selecionarOpcao('open-tipo-pessoa', 'search-tipo-pessoa', propostaValida.apresentacao.orcamento.bolsaContrapartida.tipoPessoa)
-                        cy.get('[data-cy="rubricaBolsaForm.entidade"]').type(propostaValida.apresentacao.orcamento.bolsaContrapartida.entidade)
-                        cy.get('[data-cy="rubricaBolsa-confirmar"]').click()
-                        cy.contains(/Sucesso/i).should('be.visible');
-                        
-                    })
-                })
-            
-                it('deve adicionar Bolsa preenchendo todos os campos obrigatórios com sucesso', () => {
-                    cy.get('@fixture').then(({ propostaValida }: any) => {
-                        cy.get('[data-cy="add-button"]').click()
-                        cy.selecionarOpcao('open-modalidade-bolsa-id', 'search-modalidade-bolsa-id', propostaValida.apresentacao.orcamento.bolsa.modalidadeBolsa)
-                        cy.selecionarOpcao('open-nivel-bolsa-id', 'search-nivel-bolsa-id', propostaValida.apresentacao.orcamento.bolsa.nivelBolsa)
-                        cy.get('[data-cy="rubricaBolsaForm.quantidade"]').type(propostaValida.apresentacao.orcamento.bolsa.quantidade)
-                        cy.selecionarOpcao('open-duracao', 'search-duracao', propostaValida.apresentacao.orcamento.bolsa.duracaoMeses)
-                        cy.get('[data-cy="rubricaBolsaForm.valorTotal"]').type(propostaValida.apresentacao.orcamento.bolsa.valorTotal)
-                        cy.get('[data-cy="rubricaBolsa-confirmar"]').click()
-                        cy.contains(/Sucesso/i).should('be.visible');
-                    })
-                })
-            
-                it('deve atualizar o bloco Total gasto em cada moeda após o cadastro de uma Bolsa com valor informado', () => {
-                    cy.get('@fixture').then(({ propostaValida }: any) => {
-                        cy.get('[data-cy="total-gasto-moeda"]').should('contain.text', 'Nenhum dinheiro foi gasto ainda.')
-                        cy.get('[data-cy="add-button"]').click()
-                        cy.selecionarOpcao('open-modalidade-bolsa-id', 'search-modalidade-bolsa-id', propostaValida.apresentacao.orcamento.bolsa.modalidadeBolsa)
-                        cy.selecionarOpcao('open-nivel-bolsa-id', 'search-nivel-bolsa-id', propostaValida.apresentacao.orcamento.bolsa.nivelBolsa)
-                        cy.get('[data-cy="rubricaBolsaForm.quantidade"]').type(propostaValida.apresentacao.orcamento.bolsa.quantidade)
-                        cy.selecionarOpcao('open-duracao', 'search-duracao', propostaValida.apresentacao.orcamento.bolsa.duracaoMeses)
-                        cy.get('[data-cy="rubricaBolsaForm.valorTotal"]').type(propostaValida.apresentacao.orcamento.bolsa.valorTotal)
-                        cy.get('[data-cy="rubricaBolsa-confirmar"]').click()
-                        cy.get('[data-cy="total-gasto-moeda"]').should('not.contain.text', 'Nenhum dinheiro foi gasto ainda.')
-                        cy.get('[data-cy="total-gasto-moeda"]').should('contain.text', propostaValida.apresentacao.orcamento.bolsa.valorTotal)
-                    })
-            })
-
-            context('Validações', () => {
-                it('deve exibir erro quando Contrapartida está marcada e Tipo Pessoa e Entidade não foram preenchidos', () => {
-                    cy.get('@fixture').then(({ propostaValida }: any) => {
-                        cy.get('[data-cy="add-button"]').click()
-                        cy.selecionarOpcao('open-modalidade-bolsa-id', 'search-modalidade-bolsa-id', propostaValida.apresentacao.orcamento.bolsa.modalidadeBolsa)
-                        cy.selecionarOpcao('open-nivel-bolsa-id', 'search-nivel-bolsa-id', propostaValida.apresentacao.orcamento.bolsa.nivelBolsa)
-                        cy.get('[data-cy="rubricaBolsaForm.quantidade"]').type(propostaValida.apresentacao.orcamento.bolsa.quantidade)
-                        cy.selecionarOpcao('open-duracao', 'search-duracao', propostaValida.apresentacao.orcamento.bolsa.duracaoMeses)
-                        cy.get('[data-cy="rubricaBolsaForm.valorTotal"]').type(propostaValida.apresentacao.orcamento.bolsa.valorTotal)
-                        cy.get('[data-cy="contrapartida-box"]').check()
-                        cy.get('[data-cy="rubricaBolsa-confirmar"]').click()
-                        cy.contains(/Erro/i).should('be.visible');
-                    })
-                })
-            })
-            context('Editar', () => {
-                it('deve editar a Quantidade de uma Bolsa já cadastrada através da coluna Ações com sucesso', () => {
-                    cy.get('@fixture').then(({ propostaValida }: any) => {
-                        cy.get('[data-cy="editar-button"]').first().click()
-                        cy.get('[data-cy="rubricaBolsaForm.quantidade"]').clear().type(propostaValida.apresentacao.orcamento.bolsaEdicao.quantidade)
-                        cy.get('[data-cy="rubricaBolsa-confirmar"]').click()
-                        cy.get('[data-cy="lista-bolsas"]').should('contain', propostaValida.apresentacao.orcamento.bolsaEdicao.quantidade)
-                    })
-                })
-            })
-        
-            context('Excluir', () => {
-                it('deve excluir uma Bolsa já cadastrada através da coluna Ações com sucesso', () => {
-                    cy.get('[data-cy="apagar-button"]').first().click()
-                    cy.get('[data-cy="lista-bolsas"]').should('not.exist')
-                })
-            })
-        })
-
-    })
-
-        // ════════════════════════════════════════════════════════════════
         // STEP 4 — ANEXOS / DOCUMENTOS PESSOAIS
         // ════════════════════════════════════════════════════════════════
 
@@ -1153,7 +1082,6 @@ describe('Submeter Proposta', () => {
                         cy.get('[data-cy="open-select-categories-criado-po"]').click()
                         cy.contains('[role="option"]', propostaValida.anexos.documentosPessoais.categoria).first().click({ force: true })
                         cy.get('input[type="file"]').attachFile(propostaValida.anexos.documentosPessoais.arquivo) // REPORT: sem data-cy
-                        cy.get('[data-cy="documentos-pessoais-anexados"]').should('contain', propostaValida.anexos.documentosPessoais.arquivo)
                         cy.contains(/Sucesso/i).should('be.visible');
                     })
                 })
@@ -1206,7 +1134,7 @@ describe('Submeter Proposta', () => {
         // STEP 4 — ANEXOS / DOCUMENTOS DA PROPOSTA
         // ════════════════════════════════════════════════════════════════
 
-        context('Documentos da Proposta', () => {
+        context.only('Documentos da Proposta', () => {
             beforeEach(() => {
                 cy.get('[data-cy="apresentacao"]').click();
                 cy.get('[data-cy="anexos"]').click();

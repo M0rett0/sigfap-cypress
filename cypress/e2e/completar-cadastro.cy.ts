@@ -4,8 +4,8 @@ import '../support/commands'
 describe('Completar Cadastro do Usuário', () => {
 
     beforeEach(() => {
-        cy.loginPorFixture('cadastro-completo')
-        cy.fixture('cadastro-completo').as('fixture')
+        cy.loginPorFixture('completar-cadastro')
+        cy.fixture('completar-cadastro').as('fixture')
     })
 
     context('Edição de Perfil', () => {
@@ -136,7 +136,7 @@ describe('Completar Cadastro do Usuário', () => {
                     })
                 })
  
-                it.only('deve truncar o campo Nome Social no limite máximo de 64 caracteres', () => {
+                it('deve truncar o campo Nome Social no limite máximo de 64 caracteres', () => {
                     cy.get('@fixture').then(({ dadosInvalidos }: any) => {
                         cy.get('[data-cy="possuo-nome-social"]').then(($checkbox) => {
                             if (!$checkbox.is(':checked')) {
