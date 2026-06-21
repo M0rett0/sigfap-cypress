@@ -1,5 +1,7 @@
 # CYPRESS SIGFAP
 
+Link do docs com o plano de testes: https://docs.google.com/document/d/1T2E0Rj4FgcYV-kTEUtsFGCx0oVrDNyeGmJAwnbTyVWU/edit?usp=sharing
+
 # Pré-requisitos
 
 Para a realização do trabalho, serão necessários conhecimentos prévios e a instalação de algumas ferramentas, listadas abaixo.
